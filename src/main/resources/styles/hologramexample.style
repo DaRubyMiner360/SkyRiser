@@ -1,0 +1,25 @@
+{
+  // This is one of the built-in templates
+
+  "format": "new",
+
+  // The building part
+  "actions": [
+    {
+      "action_type": "hologram",
+      "action": "{name} {x_pos} {y_pos + 1} {z_pos} '[\"This is the first line.\", \"{second_line_text}\"]'"
+    }
+  ],
+
+  // The options of the template. These go at the end of the command as arguments. An option should be in the following format: "option_name": "description".
+  "options": [
+    {
+      "name": "name",
+      "description": "The name of the hologram"
+    },
+    {
+      "name": "second_line_text",
+      "description": "The text of the second line of the hologram"
+    }
+  ]
+}

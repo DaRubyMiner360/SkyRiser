@@ -1,0 +1,38 @@
+{
+  // This template makes a plain box with the first color in the palate.
+  // This is one of the built-in templates
+
+  "format": "new",
+
+  // The building part
+  "actions": [
+    {
+      "action_type": "hollowcube",
+      "action": "{x_pos} {y_pos - 1} {z_pos} {x_pos + (x_scale - 1)} {y_pos + (y_scale - 1)} {z_pos + (z_scale - 1)} {palette[0]}"
+    },
+    {
+      "action_type": "cube",
+      "action": "{x_pos} {y_pos} {z_pos + 2} {x_pos} {y_pos + 1} {z_pos + 2} air"
+    },
+    {
+      "action_type": "move",
+      "action": "{x_pos} {y_pos + y_scale} {z_pos}"
+    }
+  ],
+
+  // The options of the template. These go at the end of the command as arguments. An option should be in the following format: "option_name": "description".
+  "options": [
+    {
+      "name": "x_scale",
+      "description": "The scale of the building on the x-axis"
+    },
+    {
+      "name": "y_scale",
+      "description": "The scale of the building on the y-axis"
+    },
+    {
+      "name": "z_scale",
+      "description": "The scale of the building on the z-axis"
+    }
+  ]
+}

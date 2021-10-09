@@ -1,0 +1,28 @@
+name: SkyRiser
+version: ${project.version}
+api-version: 1.17
+main: ml.darubyminer360.skyriser.SkyRiser
+
+prefix: SkyRiser
+authors: [ DaRubyMiner360 ]
+description: The SkyRiser plugin.
+website: http://darubyminer360.ml/
+
+softdepend: [ WorldEdit, HolographicDisplays ]
+
+commands:
+  skyreload:
+    usage: /skyreload
+    aliases:
+      - sreload
+      - sr
+  skyscraper:
+    usage: /skyscraper <style> <palette> <palette sample skip amount> <palette blacklist> options...
+    aliases:
+      - scraper
+      - ss
+  skytemplate:
+    usage: /skytemplate [style | palette] [list]
+    aliases:
+      - stemplate
+      - st
