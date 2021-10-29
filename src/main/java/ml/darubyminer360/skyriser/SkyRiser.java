@@ -18,23 +18,24 @@
 
 package ml.darubyminer360.skyriser;
 
-
-import ml.darubyminer360.skyriser.api.SkyRiserAPI;
 import ml.darubyminer360.skyriser.commands.*;
 import ml.darubyminer360.skyriser.files.*;
 
-import ml.darubyminer360.skyriser.listeners.PlayerJoinListener;
-import ml.darubyminer360.skyriser.utils.UpdateChecker;
+import ml.darubyminer360.skyriser.listeners.UpdateCheckerListener;
+import ml.darubyminer360.skyriser.listeners.SegmentListener;
+import ml.darubyminer360.skyriser.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
+import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
+import java.io.*;
+import java.util.*;
+
+import ch.njol.skript.Skript;
+import ch.njol.skript.SkriptAddon;
 
 public final class SkyRiser extends JavaPlugin {
     public static SkyRiser instance;
@@ -44,10 +45,19 @@ public final class SkyRiser extends JavaPlugin {
 
     public static UpdateChecker updateChecker;
 
-    public static String prefix = ChatColor.WHITE + "[" + ChatColor.BLUE + "Sky" + ChatColor.GREEN + "Riser" + ChatColor.WHITE + "] " + ChatColor.RESET;
+    public HashMap<String, Builder> playerBuilders;
+    public HashMap<String, List<Builder>> playerHistories;
+
+    File undoSave;
+
+    public static final String prefix = ChatColor.WHITE + "[" + ChatColor.BLUE + "Sky" + ChatColor.GREEN + "Riser" + ChatColor.WHITE + "] " + ChatColor.RESET;
 
     public static boolean useWorldEdit = false;
     public static boolean useHolographicDisplays = false;
+    public static boolean useParticleLib = false;
+    public static boolean useSkript = false;
+
+    public static SkriptAddon addon;
 
     @Override
     public void onEnable() {
@@ -70,7 +80,11 @@ public final class SkyRiser extends JavaPlugin {
         getCommand("skytemplate").setExecutor(new SkyTemplateCommand());
         getCommand("skytemplate").setTabCompleter(new SkyTemplateCommandTabCompletion());
 
-        Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new UpdateCheckerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new SegmentListener(), this);
+
+        undoSave = new File(getDataFolder(), "history.dat");
+        deserializeUndos(undoSave);
 
         styleManager = new StyleManager();
         paletteManager = new PaletteManager();
@@ -80,32 +94,111 @@ public final class SkyRiser extends JavaPlugin {
             updateChecker.getVersion(version -> {
                 if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
                     getLogger().info("There is not a new update available.");
-                } else {
+                }
+                else {
                     getLogger().info("There is a new update available.");
                 }
             });
         }*/
 
-        useWorldEdit = Bukkit.getServer().getPluginManager().isPluginEnabled("WorldEdit");
         useHolographicDisplays = Bukkit.getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
+        useParticleLib = Bukkit.getServer().getPluginManager().isPluginEnabled("ParticleLib");
+        useSkript = Bukkit.getServer().getPluginManager().isPluginEnabled("Skript");
 
-
-//        BiFunction<CommandSender, List<Object>, Boolean> func = (sender, template) -> {
-//            Style style = (Style) template.get(0);
-//            Style.Action action = (Style.Action) template.get(1);
-//            Palette palette = (Palette) template.get(2);
-//            List<String> args = (List<String>) template.get(3);
-//            if (action.action_type.equalsIgnoreCase("api")) {
-//                sender.sendMessage("API Test is Working! " + args.get(0));
-//                return true;
-//            }
-//            return false;
-//        };
-//        SkyRiserAPI.customActions.add(func);
+        if (useSkript) {
+            addon = Skript.registerAddon(this);
+            try {
+                addon.loadClasses("ml.darubyminer360.skyriser", "api", "skript", "elements");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        serializeUndos(undoSave);
+        for (String s : playerBuilders.keySet()) {
+            removePlayerBuilder(s);
+        }
+    }
+
+    public boolean addPlayerBuilder(String playerName, Builder builder) {
+        if (playerBuilders.containsKey(playerName)) {
+            return false;
+        }
+        playerBuilders.put(playerName, builder);
+        addPlayerHistory(playerName, builder);
+        return true;
+    }
+
+    public boolean removePlayerBuilder(String playerName) {
+        if (!playerBuilders.containsKey(playerName)) {
+            return false;
+        }
+        playerBuilders.remove(playerName);
+        return true;
+    }
+
+    public void addPlayerHistory(String playerName, Builder builder) {
+        if (playerHistories.containsKey(playerName))
+            playerHistories.get(playerName).add(builder);
+        else
+            playerHistories.put(playerName, List.of(builder));
+    }
+
+    public boolean undo(String playerName, int amount) {
+        if (!playerHistories.containsKey(playerName) || amount > playerHistories.get(playerName).size())
+            return false;
+
+        for (int i = 0; i < amount; i++) {
+            playerHistories.get(playerName).get(playerHistories.get(playerName).size() - 1).undo();
+            playerHistories.get(playerName).remove(playerHistories.get(playerName).size() - 1);
+        }
+        playerBuilders.remove(playerName);
+        return true;
+    }
+
+    public boolean undo(String playerName) {
+        return undo(playerName, 1);
+    }
+
+    public void serializeUndos(File file) {
+        ObjectOutputStream oos = null;
+        try {
+            file.createNewFile();
+
+            oos = new ObjectOutputStream(new FileOutputStream(file));
+            oos.writeObject(playerHistories);
+        } catch (IOException ex) {
+            getLogger().warning(prefix + "Unable to save history file.");
+        } finally {
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+    }
+
+    public void deserializeUndos(File file) {
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(file));
+            playerHistories = (HashMap<String, List<Builder>>) ois.readObject();
+            ois.close();
+        } catch (Exception ex) {
+            if (!(ex instanceof FileNotFoundException))
+                getLogger().warning(prefix + "Unable to load history file.");
+            playerHistories = new HashMap<>();
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
     }
 }

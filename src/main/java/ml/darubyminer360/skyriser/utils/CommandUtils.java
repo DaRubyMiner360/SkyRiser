@@ -38,7 +38,7 @@ public class CommandUtils {
         return Double.valueOf(d);
     }
 
-    private static World getDefaultWorld() {
+    static World getDefaultWorld() {
         return Bukkit.getServer().getWorlds().get(0);
     }
 
@@ -52,9 +52,11 @@ public class CommandUtils {
     public static World getWorld(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender) {
             return getDefaultWorld();
-        } else if (sender instanceof Entity) {
+        }
+        else if (sender instanceof Entity) {
             return ((Entity) sender).getWorld();
-        } else if (sender instanceof BlockCommandSender) {
+        }
+        else if (sender instanceof BlockCommandSender) {
             return ((BlockCommandSender) sender).getBlock().getWorld();
         }
         return getDefaultWorld();
@@ -70,7 +72,8 @@ public class CommandUtils {
     public static Location getLocation(CommandSender sender) {
         if (sender instanceof Entity) {
             return ((Entity) sender).getLocation();
-        } else if (sender instanceof BlockCommandSender) {
+        }
+        else if (sender instanceof BlockCommandSender) {
             return ((BlockCommandSender) sender).getBlock().getLocation();
         }
         return new Location(getDefaultWorld(), 0, 0, 0);
@@ -90,7 +93,8 @@ public class CommandUtils {
         if (x.startsWith("~") || y.startsWith("~") || z
                 .startsWith("~")) { // The coordinates are relative
             currentLocation = getLocation(sender);
-        } else { // Otherwise, the current location can be set to 0/0/0 (since it's absolute)
+        }
+        else { // Otherwise, the current location can be set to 0/0/0 (since it's absolute)
             currentLocation = new Location(getWorld(sender), 0, 0, 0);
         }
         return getLocation(currentLocation, x, y, z);
@@ -123,7 +127,8 @@ public class CommandUtils {
                 diff = getDouble(relativeX.substring(1), true);
             }
             x = location.getX() + diff;
-        } else {
+        }
+        else {
             x = getDouble(relativeX, true);
         }
         if (relativeY.startsWith("~")) {
@@ -132,7 +137,8 @@ public class CommandUtils {
                 diff = getDouble(relativeY.substring(1), false);
             }
             y = location.getY() + diff;
-        } else {
+        }
+        else {
             y = getDouble(relativeY, false);
         }
         if (relativeZ.startsWith("~")) {
@@ -141,7 +147,8 @@ public class CommandUtils {
                 diff = getDouble(relativeZ.substring(1), true);
             }
             z = location.getZ() + diff;
-        } else {
+        }
+        else {
             z = getDouble(relativeZ, true);
         }
         return new Location(location.getWorld(), x, y, z);

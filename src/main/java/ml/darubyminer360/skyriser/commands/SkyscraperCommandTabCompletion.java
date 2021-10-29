@@ -21,9 +21,11 @@ package ml.darubyminer360.skyriser.commands;
 import ml.darubyminer360.skyriser.SkyRiser;
 import ml.darubyminer360.skyriser.files.Palette;
 import ml.darubyminer360.skyriser.files.Style;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,54 +38,92 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
             List<String> valid = new ArrayList<>();
 
             valid.add("build");
+            valid.add("stop");
+            valid.add("undo");
             valid.add("usage");
 
             return valid;
         }
-        else if (args.length == 2 && args[0].equalsIgnoreCase("build")) {
-            SkyRiser.styleManager.loadStyles();
+        else if (args[0].equalsIgnoreCase("build")) {
+            if (args.length == 2) {
+                SkyRiser.styleManager.loadStyles();
 
-            List<String> valid = new ArrayList<>();
+                List<String> valid = new ArrayList<>();
 
-            for (Map.Entry<String, Style> s : SkyRiser.styleManager.getStyles().entrySet()) {
-                valid.add(s.getKey());
+                for (Map.Entry<String, Style> s : SkyRiser.styleManager.getStyles().entrySet()) {
+                    valid.add(s.getKey());
+                }
+
+                return valid;
             }
+            else if (args.length == 3) {
+                SkyRiser.paletteManager.loadPalettes();
 
-            return valid;
-        }
-        else if (args.length == 3 && args[0].equalsIgnoreCase("build")) {
-            SkyRiser.paletteManager.loadPalettes();
+                List<String> valid = new ArrayList<>();
 
-            List<String> valid = new ArrayList<>();
+                for (Map.Entry<String, Palette> palette : SkyRiser.paletteManager.getPalettes().entrySet()) {
+                    valid.add(palette.getKey());
+                }
 
-            for (Map.Entry<String, Palette> p : SkyRiser.paletteManager.getPalettes().entrySet()) {
-                valid.add(p.getKey());
+                return valid;
             }
+            else if (args.length == 4) {
+                List<String> valid = new ArrayList<>();
 
-            return valid;
-        }
-        else if (args.length == 4 && args[0].equalsIgnoreCase("build")) {
-            List<String> valid = new ArrayList<>();
+                valid.add("0");
+                valid.add("1");
+                valid.add("2");
+                valid.add("3");
+                valid.add("4");
+                valid.add("5");
 
-            valid.add("0");
-            valid.add("1");
-            valid.add("2");
-            valid.add("3");
-            valid.add("4");
-            valid.add("5");
-
-            return valid;
-        }
-        else if (args.length == 5 && args[0].equalsIgnoreCase("build")) {
-            SkyRiser.paletteManager.loadPalettes();
-
-            List<String> valid = new ArrayList<>();
-
-            for (Map.Entry<String, Palette> p : SkyRiser.paletteManager.getPalettes().entrySet()) {
-                valid.add(p.getKey());
+                return valid;
             }
+            else if (args.length == 5) {
+                SkyRiser.paletteManager.loadPalettes();
 
-            return valid;
+                List<String> valid = new ArrayList<>();
+
+                for (Map.Entry<String, Palette> palette : SkyRiser.paletteManager.getPalettes().entrySet()) {
+                    valid.add(palette.getKey());
+                }
+
+                return valid;
+            }
+        }
+        else if (args[0].equalsIgnoreCase("stop")) {
+            if (args.length == 2) {
+                List<String> valid = new ArrayList<>();
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    valid.add(player.getName());
+                }
+
+                return valid;
+            }
+        }
+        else if (args[0].equalsIgnoreCase("undo")) {
+            if (args.length == 2) {
+                List<String> valid = new ArrayList<>();
+
+                valid.add("0");
+                valid.add("1");
+                valid.add("2");
+                valid.add("3");
+                valid.add("4");
+                valid.add("5");
+
+                return valid;
+            }
+            else if (args.length == 3) {
+                List<String> valid = new ArrayList<>();
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    valid.add(player.getName());
+                }
+
+                return valid;
+            }
         }
 
         return null;

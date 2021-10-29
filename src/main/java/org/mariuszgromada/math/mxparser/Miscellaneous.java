@@ -237,7 +237,7 @@ class KwTypeComparator implements Comparator<KeyWord> {
 * Constant "a = 5/20"
 */
 class HeadEqBody {
-	private boolean ONLY_PARSER_KEYWORDS = true;
+	boolean ONLY_PARSER_KEYWORDS = true;
 	String headStr;
 	String bodyStr;
 	int eqPos;

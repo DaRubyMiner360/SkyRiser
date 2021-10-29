@@ -1,0 +1,15 @@
+{
+  // This is one of the built-in templates
+
+  // The building part
+  "actions": [
+    {
+      "action_type": "circle",
+      "action": "{x_pos} {y_pos - 1} {z_pos} cobblestone"
+    }
+  ],
+
+  // The options of the template. These go at the end of the command as arguments. An option should be in the following format: "option_name": "description".
+  "options": [
+  ]
+}

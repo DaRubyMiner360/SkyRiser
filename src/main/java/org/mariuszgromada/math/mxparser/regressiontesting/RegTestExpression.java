@@ -92,10 +92,10 @@ import org.mariuszgromada.math.mxparser.mathcollection.SpecialValueTrigonometric
  * @see Expression
  */
 public class RegTestExpression {
-	private static Expression[] exp;
-	private static boolean tmp;
-	private static final double PI = MathConstants.PI;
-	private static boolean runTest_00000_00100(int testId) {
+	static Expression[] exp;
+	static boolean tmp;
+	static final double PI = MathConstants.PI;
+	static boolean runTest_00000_00100(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -1207,7 +1207,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_00101_00200(int testId) {
+	static boolean runTest_00101_00200(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		boolean syn1;
@@ -2369,7 +2369,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_00201_00300(int testId) {
+	static boolean runTest_00201_00300(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -3551,7 +3551,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_00301_00400(int testId) {
+	static boolean runTest_00301_00400(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -4605,7 +4605,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_00401_00500(int testId) {
+	static boolean runTest_00401_00500(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -5758,7 +5758,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_00501_00600(int testId) {
+	static boolean runTest_00501_00600(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -6875,7 +6875,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_00601_00700(int testId) {
+	static boolean runTest_00601_00700(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -8019,7 +8019,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_00701_00800(int testId) {
+	static boolean runTest_00701_00800(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -9168,7 +9168,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_00801_00900(int testId) {
+	static boolean runTest_00801_00900(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -10458,7 +10458,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_00901_01000(int testId) {
+	static boolean runTest_00901_01000(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -11891,7 +11891,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_01001_01100(int testId) {
+	static boolean runTest_01001_01100(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -13305,7 +13305,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_01101_01200(int testId) {
+	static boolean runTest_01101_01200(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		double value = 0;
@@ -14819,7 +14819,7 @@ public class RegTestExpression {
 			mXparser.consolePrint("ERROR");
 		return testResult;
 	}
-	private static boolean runTest_01201_01300(int testId) {
+	static boolean runTest_01201_01300(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		Argument x;
 		boolean testResult = false;

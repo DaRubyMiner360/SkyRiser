@@ -18,16 +18,7 @@
 
 package ml.darubyminer360.skyriser.utils;
 
-import com.sk89q.worldedit.EditSession;
-import org.bukkit.Location;
-import org.bukkit.Material;
-
-import java.util.List;
-
-public class WorldEditUtils {
-    public static EditSession editSession;
-
-    public static void Reset() {
-        editSession = null;
-    }
+@FunctionalInterface
+public interface Function6<T1, T2, T3, T4, T5, R> {
+    public R apply(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5);
 }

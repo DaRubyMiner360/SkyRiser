@@ -146,8 +146,8 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * For verbose mode purposes
 	 */
-	private static final boolean WITH_EXP_STR = true;
-	private static final boolean NO_EXP_STR = false;
+	static final boolean WITH_EXP_STR = true;
+	static final boolean NO_EXP_STR = false;
 	/**
 	 * Status of the Expression syntax
 	 */
@@ -157,7 +157,7 @@ public class Expression extends PrimitiveElement {
 	 * Expression string (for example: "sin(x)+cos(y)")
 	 */
 	String expressionString;
-	private String description;
+	String description;
 	/**
 	 * List of arguments
 	 *
@@ -180,7 +180,7 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * List of key words known by the parser
 	 */
-	private List<KeyWord> keyWordsList;
+	List<KeyWord> keyWordsList;
 	/**
 	 * List of expression tokens (words).
 	 * Token class defines all needed
@@ -193,7 +193,7 @@ public class Expression extends PrimitiveElement {
 	 *    - token value (if token is a number)
 	 *    - token level - key information regarding sequence (order) of further parsing
 	 */
-	private List<Token> initialTokens;
+	List<Token> initialTokens;
 	/**
 	 * the initialTokens list keeps unchanged information about
 	 * found tokens.
@@ -206,7 +206,7 @@ public class Expression extends PrimitiveElement {
 	 * At the end of the calculation the tokensList should contain only one
 	 * element - the result of all calculations.
 	 */
-	private List<Token> tokensList;
+	List<Token> tokensList;
 	/**
 	 * List of related expressions, for example when
 	 * user defined function is used in the expression
@@ -223,12 +223,12 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * Keeps computing time
 	 */
-	private double computingTime;
+	double computingTime;
 	/**
 	 * if true then new tokenizing is required
 	 * (the initialTokens list needs to be updated)
 	 */
-	private boolean expressionWasModified;
+	boolean expressionWasModified;
 	/**
 	 * If recursive mode is on the recursive calls are permitted.
 	 * It means there will be no null pointer exceptions
@@ -239,7 +239,7 @@ public class Expression extends PrimitiveElement {
 	 * Verbose mode prints processing info
 	 * calls System.out.print* methods
 	 */
-	private boolean verboseMode;
+	boolean verboseMode;
 	/**
 	 * Internal parameter for calculus expressions
 	 * to avoid decrease in accuracy.
@@ -254,11 +254,11 @@ public class Expression extends PrimitiveElement {
 	 *    - NO_SYNTAX_ERRORS
 	 *    - SYNTAX_ERROR_OR_STATUS_UNKNOWN
 	 */
-	private boolean syntaxStatus;
+	boolean syntaxStatus;
 	/**
 	 * Message after checking the syntax
 	 */
-	private String errorMessage;
+	String errorMessage;
 	/**
 	 * Flag used internally to mark started recursion
 	 * call on the current object, necessary to
@@ -270,7 +270,7 @@ public class Expression extends PrimitiveElement {
 	 * @see setExpressionModifiedFlag()
 	 * @see checkSyntax()
 	 */
-	private boolean recursionCallPending;
+	boolean recursionCallPending;
 	/**
 	 * Internal counter to avoid infinite loops while calculating
 	 * expression defined in the way shown by below examples
@@ -285,14 +285,14 @@ public class Expression extends PrimitiveElement {
 	 * f.addDefinitions(g);
 	 * g.addDefinitions(f);
 	 */
-	private int recursionCallsCounter;
+	int recursionCallsCounter;
 	/**
 	 * Internal indicator for tokenization process
 	 * if true, then keywords such as constants
 	 * functions etc.. will not be recognized
 	 * during tokenization
 	 */
-	private boolean parserKeyWordsOnly;
+	boolean parserKeyWordsOnly;
 	/**
 	 * Indicator whether expression was
 	 * automatically built for user defined
@@ -322,12 +322,12 @@ public class Expression extends PrimitiveElement {
 	 * f.addDefinitions(g);
 	 * g.addDefinitions(f);
 	 */
-	private boolean internalClone;
+	boolean internalClone;
 	/**
 	 * mXparser options changeset
 	 * used in checkSyntax() method
 	 */
-	private int optionsChangesetNumber = -1;
+	int optionsChangesetNumber = -1;
 	/*=================================================
 	 *
 	 * Related expressions handling
@@ -420,7 +420,7 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * Common variables while expression initializing
 	 */
-	private void expressionInternalVarsInit() {
+	void expressionInternalVarsInit() {
 		description = "";
 		errorMessage = "";
 		computingTime = 0;
@@ -433,7 +433,7 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * Common elements while expression initializing
 	 */
-	private void expressionInit() {
+	void expressionInit() {
 		/*
 		 * New lists
 		 */
@@ -575,7 +575,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      expression          the base expression
 	 */
-	private Expression(Expression expression) {
+	Expression(Expression expression) {
 		super(Expression.TYPE_ID);
 		expressionString = new String(expression.expressionString);
 		description = new String(expression.description);
@@ -1307,7 +1307,7 @@ public class Expression extends PrimitiveElement {
 	 * @param      ulpRound            If true, then if {@link mXparser#ulpRounding} = true
 	 *                                 intelligent ULP rounding is applied.
 	 */
-	private void setToNumber(int pos, double number, boolean ulpRound) {
+	void setToNumber(int pos, double number, boolean ulpRound) {
 		Token token = tokensList.get(pos);
 		if ( (mXparser.ulpRounding) && (disableRounding == false) ){
 			if (ulpRound) {
@@ -1330,7 +1330,7 @@ public class Expression extends PrimitiveElement {
 		token.tokenId = ParserSymbol.NUMBER_ID;
 		token.keyWord = ParserSymbol.NUMBER_STR;
 	}
-	private void setToNumber(int pos, double number) {
+	void setToNumber(int pos, double number) {
 		setToNumber(pos, number, false);
 	}
 	/**
@@ -1386,12 +1386,12 @@ public class Expression extends PrimitiveElement {
 	 * @param      ulpRound            If true, then if {@link mXparser#ulpRounding} = true
 	 *                                 intelligent ULP rounding is applied.
 	 */
-	private void f1SetDecreaseRemove(int pos, double result, boolean ulpRound) {
+	void f1SetDecreaseRemove(int pos, double result, boolean ulpRound) {
 		setToNumber(pos, result, ulpRound);
 		tokensList.get(pos).tokenLevel--;
 		tokensList.remove(pos+1);
 	}
-	private void f1SetDecreaseRemove(int pos, double result) {
+	void f1SetDecreaseRemove(int pos, double result) {
 		f1SetDecreaseRemove(pos, result, false);
 	}
 	/**
@@ -1406,13 +1406,13 @@ public class Expression extends PrimitiveElement {
 	 * @param      ulpRound            If true, then if {@link mXparser#ulpRounding} = true
 	 *                                 intelligent ULP rounding is applied.
 	 */
-	private void f2SetDecreaseRemove(int pos, double result, boolean ulpRound) {
+	void f2SetDecreaseRemove(int pos, double result, boolean ulpRound) {
 		setToNumber(pos, result, ulpRound);
 		tokensList.get(pos).tokenLevel--;
 		tokensList.remove(pos+2);
 		tokensList.remove(pos+1);
 	}
-	private void f2SetDecreaseRemove(int pos, double result) {
+	void f2SetDecreaseRemove(int pos, double result) {
 		f2SetDecreaseRemove(pos, result, false);
 	}
 	/**
@@ -1427,14 +1427,14 @@ public class Expression extends PrimitiveElement {
 	 * @param      ulpRound            If true, then if {@link mXparser#ulpRounding} = true
 	 *                                 intelligent ULP rounding is applied.
 	 */
-	private void f3SetDecreaseRemove(int pos, double result, boolean ulpRound) {
+	void f3SetDecreaseRemove(int pos, double result, boolean ulpRound) {
 		setToNumber(pos, result, ulpRound);
 		tokensList.get(pos).tokenLevel--;
 		tokensList.remove(pos+3);
 		tokensList.remove(pos+2);
 		tokensList.remove(pos+1);
 	}
-	private void f3SetDecreaseRemove(int pos, double result) {
+	void f3SetDecreaseRemove(int pos, double result) {
 		f3SetDecreaseRemove(pos, result, false);
 	}
 	/**
@@ -1449,12 +1449,12 @@ public class Expression extends PrimitiveElement {
 	 * @param      ulpRound            If true, then if {@link mXparser#ulpRounding} = true
 	 *                                 intelligent ULP rounding is applied.
 	 */
-	private void opSetDecreaseRemove(int pos, double result, boolean ulpRound) {
+	void opSetDecreaseRemove(int pos, double result, boolean ulpRound) {
 		setToNumber(pos, result, ulpRound);
 		tokensList.remove(pos+1);
 		tokensList.remove(pos-1);
 	}
-	private void opSetDecreaseRemove(int pos, double result) {
+	void opSetDecreaseRemove(int pos, double result) {
 		opSetDecreaseRemove(pos, result, false);
 	}
 	/**
@@ -1469,7 +1469,7 @@ public class Expression extends PrimitiveElement {
 	 * @param      ulpRound            If true, then if {@link mXparser#ulpRounding} = true
 	 *                                 intelligent ULP rounding is applied.
 	 */
-	private void calcSetDecreaseRemove(int pos, double result, boolean ulpRound) {
+	void calcSetDecreaseRemove(int pos, double result, boolean ulpRound) {
 		setToNumber(pos, result, ulpRound);
 		tokensList.get(pos).tokenLevel--;
 		/*
@@ -1487,7 +1487,7 @@ public class Expression extends PrimitiveElement {
 		for (int p = rPos; p >= lPos; p--)
 			tokensList.remove(p);
 	}
-	private void calcSetDecreaseRemove(int pos, double result) {
+	void calcSetDecreaseRemove(int pos, double result) {
 		calcSetDecreaseRemove(pos, result, false);
 	}
 	/**
@@ -1503,13 +1503,13 @@ public class Expression extends PrimitiveElement {
 	 * @param      ulpRound            If true, then if {@link mXparser#ulpRounding} = true
 	 *                                 intelligent ULP rounding is applied.
 	 */
-	private void variadicSetDecreaseRemove(int pos, double value, int length, boolean ulpRound) {
+	void variadicSetDecreaseRemove(int pos, double value, int length, boolean ulpRound) {
 		setToNumber(pos, value, ulpRound);
 		tokensList.get(pos).tokenLevel--;
 		for (int p = pos + length; p > pos; p--)
 			tokensList.remove(p);
 	}
-	private void variadicSetDecreaseRemove(int pos, double value, int length) {
+	void variadicSetDecreaseRemove(int pos, double value, int length) {
 		variadicSetDecreaseRemove(pos, value, length, false);
 	}
 	/**
@@ -1520,7 +1520,7 @@ public class Expression extends PrimitiveElement {
 	 * @param      ulpRound            If true, then if {@link mXparser#ulpRounding} = true
 	 *                                 intelligent ULP rounding is applied.
 	 */
-	private void ifSetRemove(int pos, double ifCondition, boolean ulpRound) {
+	void ifSetRemove(int pos, double ifCondition, boolean ulpRound) {
 		/*
 		 * left parethesis position
 		 */
@@ -1573,14 +1573,14 @@ public class Expression extends PrimitiveElement {
 		removeTokens(lPos+2, c1Pos-1);
 		tokensList.get(pos).tokenId = Function3Arg.IF_ID;
 	}
-	private void removeTokens(int from, int to) {
+	void removeTokens(int from, int to) {
 		if (from < to) {
 			for (int p = to; p >= from; p--)
 				tokensList.remove(p);
 		} else if (from == to)
 			tokensList.remove(from);
 	}
-	private void ifSetRemove(int pos, double ifCondition) {
+	void ifSetRemove(int pos, double ifCondition) {
 		ifSetRemove(pos, ifCondition, false);
 	}
 	/**
@@ -1591,7 +1591,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @return     tokens list representing requested subexpression.
 	 */
-	private List<Token> createInitialTokens(int startPos,
+	List<Token> createInitialTokens(int startPos,
 			int endPos,
 			List<Token> tokensList) {
 		List<Token> tokens = new ArrayList<Token>();
@@ -1607,7 +1607,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the function position
 	 */
-	private int getParametersNumber(int pos) {
+	int getParametersNumber(int pos) {
 		int lPpos = pos+1;
 		if (lPpos == initialTokens.size())
 			return -1;
@@ -1648,7 +1648,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @see        FunctionParameter
 	 */
-	private List<FunctionParameter> getFunctionParameters(int pos, List<Token> tokensList) {
+	List<FunctionParameter> getFunctionParameters(int pos, List<Token> tokensList) {
 		List<FunctionParameter> functionParameters = new ArrayList<FunctionParameter>();
 		int cPos = pos+2;
 		int tokenLevel = tokensList.get(pos+1).tokenLevel;
@@ -1702,7 +1702,7 @@ public class Expression extends PrimitiveElement {
 	 * @see        ArgumentParameter
 	 * @see        Argument
 	 */
-	private ArgumentParameter getParamArgument(String argumentName) {
+	ArgumentParameter getParamArgument(String argumentName) {
 		ArgumentParameter argParam = new ArgumentParameter();
 		argParam.index = getArgumentIndex(argumentName);
 		argParam.argument = getArgument(argParam.index);
@@ -1725,7 +1725,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      argParam            the argument parameter.
 	 */
-	private void clearParamArgument(ArgumentParameter argParam) {
+	void clearParamArgument(ArgumentParameter argParam) {
 		if (argParam.presence == NOT_FOUND)
 			argumentsList.remove(argParam.index);
 		else {
@@ -1744,7 +1744,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void FREE_ARGUMENT(int pos) {
+	void FREE_ARGUMENT(int pos) {
 		Argument argument = argumentsList.get( tokensList.get(pos).tokenId);
 		boolean argumentVerboseMode = argument.getVerboseMode();
 		if (verboseMode == true)
@@ -1758,7 +1758,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void DEPENDENT_ARGUMENT(int pos) {
+	void DEPENDENT_ARGUMENT(int pos) {
 		Argument argument = argumentsList.get( tokensList.get(pos).tokenId);
 		boolean argumentVerboseMode = argument.getVerboseMode();
 		if (verboseMode == true)
@@ -1791,7 +1791,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void USER_FUNCTION(int pos) {
+	void USER_FUNCTION(int pos) {
 		Function function;
 		Function fun = functionsList.get( tokensList.get(pos).tokenId );
 		if (fun.getRecursiveMode() == true) {
@@ -1843,7 +1843,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void USER_CONSTANT(int pos) {
+	void USER_CONSTANT(int pos) {
 		Constant constant = constantsList.get( tokensList.get(pos).tokenId );
 		setToNumber(pos, constant.getConstantValue());
 	}
@@ -1852,7 +1852,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void RECURSIVE_ARGUMENT(int pos) {
+	void RECURSIVE_ARGUMENT(int pos) {
 		double index = tokensList.get(pos+1).tokenValue;
 		RecursiveArgument argument = (RecursiveArgument)argumentsList.get( tokensList.get(pos).tokenId );
 		boolean argumentVerboseMode = argument.getVerboseMode();
@@ -1868,7 +1868,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CONSTANT(int pos) {
+	void CONSTANT(int pos) {
 		double constValue = Double.NaN;
 		switch (tokensList.get(pos).tokenId) {
 		case ConstantValue.PI_ID:
@@ -2149,7 +2149,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void UNIT(int pos) {
+	void UNIT(int pos) {
 		double unitValue = Double.NaN;
 		switch (tokensList.get(pos).tokenId) {
 		/* Ratio, Fraction */
@@ -2457,7 +2457,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void RANDOM_VARIABLE(int pos) {
+	void RANDOM_VARIABLE(int pos) {
 		double rndVar = Double.NaN;
 		switch (tokensList.get(pos).tokenId) {
 		case RandomVariable.UNIFORM_ID:
@@ -2565,7 +2565,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @return     the token value
 	 */
-	private double getTokenValue(int tokenIndex) {
+	double getTokenValue(int tokenIndex) {
 		return tokensList.get(tokenIndex).tokenValue;
 	}
 	/**
@@ -2573,7 +2573,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void TETRATION(int pos) {
+	void TETRATION(int pos) {
 		double a = getTokenValue(pos-1);
 		double n = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, MathFunctions.tetration(a, n), true);
@@ -2583,7 +2583,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void POWER(int pos) {
+	void POWER(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, MathFunctions.power(a, b), true);
@@ -2593,7 +2593,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void MODULO(int pos) {
+	void MODULO(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, MathFunctions.mod(a, b) );
@@ -2603,7 +2603,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void DIVIDE(int pos) {
+	void DIVIDE(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		if (disableRounding) {
@@ -2618,7 +2618,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void MULTIPLY(int pos) {
+	void MULTIPLY(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		if (disableRounding) opSetDecreaseRemove(pos, a * b, true);
@@ -2629,7 +2629,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void PLUS(int pos) {
+	void PLUS(int pos) {
 		Token b = tokensList.get(pos+1);
 		if (pos>0) {
 			Token a = tokensList.get(pos-1);
@@ -2652,7 +2652,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void MINUS(int pos) {
+	void MINUS(int pos) {
 		Token b = tokensList.get(pos+1);
 		if (pos>0) {
 			Token a = tokensList.get(pos-1);
@@ -2675,7 +2675,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void AND(int pos) {
+	void AND(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BooleanAlgebra.and(a, b) );
@@ -2685,7 +2685,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void OR(int pos) {
+	void OR(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BooleanAlgebra.or(a, b) );
@@ -2695,7 +2695,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void NAND(int pos) {
+	void NAND(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BooleanAlgebra.nand(a, b) );
@@ -2705,7 +2705,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void NOR(int pos) {
+	void NOR(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BooleanAlgebra.nor(a, b) );
@@ -2716,7 +2716,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void XOR(int pos) {
+	void XOR(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BooleanAlgebra.xor(a, b) );
@@ -2727,7 +2727,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void IMP(int pos) {
+	void IMP(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BooleanAlgebra.imp(a, b) );
@@ -2737,7 +2737,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CIMP(int pos) {
+	void CIMP(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BooleanAlgebra.cimp(a, b) );
@@ -2747,7 +2747,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void NIMP(int pos) {
+	void NIMP(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BooleanAlgebra.nimp(a, b) );
@@ -2757,7 +2757,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CNIMP(int pos) {
+	void CNIMP(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BooleanAlgebra.cnimp(a, b) );
@@ -2767,7 +2767,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void EQV(int pos) {
+	void EQV(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BooleanAlgebra.eqv(a, b) );
@@ -2777,7 +2777,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void NEG(int pos) {
+	void NEG(int pos) {
 		double a = getTokenValue(pos+1);
 		setToNumber(pos, BooleanAlgebra.not(a) );
 		tokensList.remove(pos+1);
@@ -2787,7 +2787,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void EQ(int pos) {
+	void EQ(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BinaryRelations.eq(a, b) );
@@ -2797,7 +2797,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void NEQ(int pos) {
+	void NEQ(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BinaryRelations.neq(a, b) );
@@ -2807,7 +2807,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LT(int pos) {
+	void LT(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BinaryRelations.lt(a, b) );
@@ -2817,7 +2817,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void GT(int pos) {
+	void GT(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BinaryRelations.gt(a, b) );
@@ -2827,7 +2827,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LEQ(int pos) {
+	void LEQ(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BinaryRelations.leq(a, b) );
@@ -2837,7 +2837,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void GEQ(int pos) {
+	void GEQ(int pos) {
 		double a = getTokenValue(pos-1);
 		double b = getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, BinaryRelations.geq(a, b) );
@@ -2847,7 +2847,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BITWISE_COMPL(int pos) {
+	void BITWISE_COMPL(int pos) {
 		long a = (long)getTokenValue(pos+1);
 		setToNumber(pos, ~a);
 		tokensList.remove(pos+1);
@@ -2857,7 +2857,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BITWISE_AND(int pos) {
+	void BITWISE_AND(int pos) {
 		long a = (long)getTokenValue(pos-1);
 		long b = (long)getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, a & b);
@@ -2867,7 +2867,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BITWISE_OR(int pos) {
+	void BITWISE_OR(int pos) {
 		long a = (long)getTokenValue(pos-1);
 		long b = (long)getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, a | b);
@@ -2877,7 +2877,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BITWISE_XOR(int pos) {
+	void BITWISE_XOR(int pos) {
 		long a = (long)getTokenValue(pos-1);
 		long b = (long)getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, a ^ b);
@@ -2887,7 +2887,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BITWISE_LEFT_SHIFT(int pos) {
+	void BITWISE_LEFT_SHIFT(int pos) {
 		long a = (long)getTokenValue(pos-1);
 		int b = (int)getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, a << b);
@@ -2897,7 +2897,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BITWISE_RIGHT_SHIFT(int pos) {
+	void BITWISE_RIGHT_SHIFT(int pos) {
 		long a = (long)getTokenValue(pos-1);
 		int b = (int)getTokenValue(pos+1);
 		opSetDecreaseRemove(pos, a >> b);
@@ -2907,7 +2907,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void SIN(int pos) {
+	void SIN(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.sin(a) );
 	}
@@ -2917,7 +2917,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void COS(int pos) {
+	void COS(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.cos(a) );
 	}
@@ -2927,7 +2927,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void TAN(int pos) {
+	void TAN(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.tan(a) );
 	}
@@ -2937,7 +2937,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CTAN(int pos) {
+	void CTAN(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.ctan(a) );
 	}
@@ -2947,7 +2947,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void SEC(int pos) {
+	void SEC(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.sec(a) );
 	}
@@ -2957,7 +2957,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void COSEC(int pos) {
+	void COSEC(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.cosec(a) );
 	}
@@ -2967,7 +2967,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ASIN(int pos) {
+	void ASIN(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.asin(a) );
 	}
@@ -2977,7 +2977,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ACOS(int pos) {
+	void ACOS(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.acos(a) );
 	}
@@ -2987,7 +2987,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ATAN(int pos) {
+	void ATAN(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.atan(a) );
 	}
@@ -2997,7 +2997,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ACTAN(int pos) {
+	void ACTAN(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.actan(a) );
 	}
@@ -3007,7 +3007,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LN(int pos) {
+	void LN(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.ln(a) );
 	}
@@ -3017,7 +3017,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LOG2(int pos) {
+	void LOG2(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.log2(a) );
 	}
@@ -3027,7 +3027,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LOG10(int pos) {
+	void LOG10(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.log10(a) );
 	}
@@ -3037,7 +3037,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void RAD(int pos) {
+	void RAD(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.rad(a) );
 	}
@@ -3047,7 +3047,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void EXP(int pos) {
+	void EXP(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.exp(a) );
 	}
@@ -3057,7 +3057,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void SQRT(int pos) {
+	void SQRT(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.sqrt(a) );
 	}
@@ -3067,7 +3067,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void SINH(int pos) {
+	void SINH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.sinh(a) );
 	}
@@ -3077,7 +3077,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void COSH(int pos) {
+	void COSH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.cosh(a) );
 	}
@@ -3087,7 +3087,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void TANH(int pos) {
+	void TANH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.tanh(a) );
 	}
@@ -3097,7 +3097,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void COTH(int pos) {
+	void COTH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.coth(a) );
 	}
@@ -3107,7 +3107,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void SECH(int pos) {
+	void SECH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.sech(a) );
 	}
@@ -3117,7 +3117,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CSCH(int pos) {
+	void CSCH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.csch(a) );
 	}
@@ -3127,7 +3127,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void DEG(int pos) {
+	void DEG(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.deg(a) );
 	}
@@ -3137,7 +3137,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ABS(int pos) {
+	void ABS(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.abs(a) );
 	}
@@ -3147,7 +3147,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void SGN(int pos) {
+	void SGN(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.sgn(a) );
 	}
@@ -3157,7 +3157,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void FLOOR(int pos) {
+	void FLOOR(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.floor(a) );
 	}
@@ -3167,7 +3167,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CEIL(int pos) {
+	void CEIL(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.ceil(a) );
 	}
@@ -3177,7 +3177,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ARSINH(int pos) {
+	void ARSINH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.arsinh(a) );
 	}
@@ -3187,7 +3187,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ARCOSH(int pos) {
+	void ARCOSH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.arcosh(a) );
 	}
@@ -3197,7 +3197,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ARTANH(int pos) {
+	void ARTANH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.artanh(a) );
 	}
@@ -3207,7 +3207,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ARCOTH(int pos) {
+	void ARCOTH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.arcoth(a) );
 	}
@@ -3217,7 +3217,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ARSECH(int pos) {
+	void ARSECH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.arsech(a) );
 	}
@@ -3227,7 +3227,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ARCSCH(int pos) {
+	void ARCSCH(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.arcsch(a) );
 	}
@@ -3236,7 +3236,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void SA(int pos) {
+	void SA(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.sa(a) );
 	}
@@ -3245,7 +3245,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void SINC(int pos) {
+	void SINC(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.sinc(a) );
 	}
@@ -3254,7 +3254,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BELL_NUMBER(int pos) {
+	void BELL_NUMBER(int pos) {
 		double n = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.bellNumber(n) );
 	}
@@ -3263,7 +3263,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LUCAS_NUMBER(int pos) {
+	void LUCAS_NUMBER(int pos) {
 		double n = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.lucasNumber(n) );
 	}
@@ -3272,7 +3272,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void FIBONACCI_NUMBER(int pos) {
+	void FIBONACCI_NUMBER(int pos) {
 		double n = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.fibonacciNumber(n) );
 	}
@@ -3281,7 +3281,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void HARMONIC_NUMBER(int pos) {
+	void HARMONIC_NUMBER(int pos) {
 		double n = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.harmonicNumber(n) );
 	}
@@ -3290,7 +3290,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void IS_PRIME(int pos) {
+	void IS_PRIME(int pos) {
 		double n = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, NumberTheory.primeTest(n) );
 	}
@@ -3299,7 +3299,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void PRIME_COUNT(int pos) {
+	void PRIME_COUNT(int pos) {
 		double n = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, NumberTheory.primeCount(n) );
 	}
@@ -3308,7 +3308,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void EXP_INT(int pos) {
+	void EXP_INT(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.exponentialIntegralEi(x) );
 	}
@@ -3317,7 +3317,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LOG_INT(int pos) {
+	void LOG_INT(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.logarithmicIntegralLi(x) );
 	}
@@ -3326,7 +3326,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void OFF_LOG_INT(int pos) {
+	void OFF_LOG_INT(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.offsetLogarithmicIntegralLi(x) );
 	}
@@ -3336,7 +3336,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void FACT(int pos) {
+	void FACT(int pos) {
 		double a = getTokenValue(pos-1);
 		setToNumber(pos, MathFunctions.factorial(a));
 		tokensList.remove(pos-1);
@@ -3347,7 +3347,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void PERC(int pos) {
+	void PERC(int pos) {
 		double a = getTokenValue(pos-1);
 		setToNumber(pos, a * Units.PERC);
 		tokensList.remove(pos-1);
@@ -3358,7 +3358,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void NOT(int pos) {
+	void NOT(int pos) {
 		double a = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, BooleanAlgebra.not(a) );
 	}
@@ -3367,7 +3367,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void GAUSS_ERF(int pos) {
+	void GAUSS_ERF(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.erf(x) );
 	}
@@ -3376,7 +3376,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void GAUSS_ERFC(int pos) {
+	void GAUSS_ERFC(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.erfc(x) );
 	}
@@ -3385,7 +3385,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void GAUSS_ERF_INV(int pos) {
+	void GAUSS_ERF_INV(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.erfInv(x) );
 	}
@@ -3394,7 +3394,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void GAUSS_ERFC_INV(int pos) {
+	void GAUSS_ERFC_INV(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.erfcInv(x) );
 	}
@@ -3404,7 +3404,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ULP(int pos) {
+	void ULP(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.ulp(x) );
 	}
@@ -3414,7 +3414,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ISNAN(int pos) {
+	void ISNAN(int pos) {
 		double x = getTokenValue(pos+1);
 		if (Double.isNaN(x))
 			f1SetDecreaseRemove(pos, BooleanAlgebra.TRUE);
@@ -3427,7 +3427,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void NDIG10(int pos) {
+	void NDIG10(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, NumberTheory.numberOfDigits(x) );
 	}
@@ -3437,7 +3437,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void NFACT(int pos) {
+	void NFACT(int pos) {
 		double n = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, NumberTheory.numberOfPrimeFactors(n) );
 	}
@@ -3447,7 +3447,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ARCSEC(int pos) {
+	void ARCSEC(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.asec(x) );
 	}
@@ -3457,7 +3457,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ARCCSC(int pos) {
+	void ARCCSC(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, MathFunctions.acosec(x) );
 	}
@@ -3467,7 +3467,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void GAMMA(int pos) {
+	void GAMMA(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.gamma(x) );
 	}
@@ -3477,7 +3477,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LAMBERT_W0(int pos) {
+	void LAMBERT_W0(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.lambertW(x, 0) );
 	}
@@ -3487,7 +3487,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LAMBERT_W1(int pos) {
+	void LAMBERT_W1(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.lambertW(x, -1) );
 	}
@@ -3497,7 +3497,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void SGN_GAMMA(int pos) {
+	void SGN_GAMMA(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.sgnGamma(x) );
 	}
@@ -3507,7 +3507,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LOG_GAMMA(int pos) {
+	void LOG_GAMMA(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.logGamma(x) );
 	}
@@ -3517,7 +3517,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void DI_GAMMA(int pos) {
+	void DI_GAMMA(int pos) {
 		double x = getTokenValue(pos+1);
 		f1SetDecreaseRemove(pos, SpecialFunctions.diGamma(x) );
 	}
@@ -3527,7 +3527,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void UDF_PARAM(int pos) {
+	void UDF_PARAM(int pos) {
 		double value = Double.NaN;
 		double x = getTokenValue(pos+1);
 		int npar = UDFVariadicParamsAtRunTime.size();
@@ -3551,7 +3551,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LOG(int pos) {
+	void LOG(int pos) {
 		double b = getTokenValue(pos+1);
 		double a = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.log(a, b) );
@@ -3563,7 +3563,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @return     List of function parameters.
 	 */
-	private List<Double> getNumbers(int pos) {
+	List<Double> getNumbers(int pos) {
 		List<Double> numbers = new ArrayList<Double>();
 		int pn = pos;
 		int lastIndex = tokensList.size() - 1;
@@ -3588,7 +3588,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void MOD(int pos) {
+	void MOD(int pos) {
 		double a = getTokenValue(pos+1);
 		double b = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.mod(a, b) );
@@ -3598,7 +3598,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BINOM_COEFF(int pos) {
+	void BINOM_COEFF(int pos) {
 		double n = getTokenValue(pos+1);
 		double k = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.binomCoeff(n, k) );
@@ -3608,7 +3608,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void PERMUTATIONS(int pos) {
+	void PERMUTATIONS(int pos) {
 		double n = getTokenValue(pos+1);
 		double k = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.numberOfPermutations(n, k) );
@@ -3617,7 +3617,7 @@ public class Expression extends PrimitiveElement {
 	 * Beta special function
 	 * @param      pos                 the token position
 	 */
-	private void BETA(int pos) {
+	void BETA(int pos) {
 		double x = getTokenValue(pos+1);
 		double y = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, SpecialFunctions.beta(x, y) );
@@ -3626,7 +3626,7 @@ public class Expression extends PrimitiveElement {
 	 * Log beta special function
 	 * @param      pos                 the token position
 	 */
-	private void LOG_BETA(int pos) {
+	void LOG_BETA(int pos) {
 		double x = getTokenValue(pos+1);
 		double y = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, SpecialFunctions.logBeta(x, y) );
@@ -3636,7 +3636,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BERNOULLI_NUMBER(int pos) {
+	void BERNOULLI_NUMBER(int pos) {
 		double m = getTokenValue(pos+1);
 		double n = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.bernoulliNumber(m, n) );
@@ -3646,7 +3646,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void STIRLING1_NUMBER(int pos) {
+	void STIRLING1_NUMBER(int pos) {
 		double n = getTokenValue(pos+1);
 		double k = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.Stirling1Number(n, k) );
@@ -3656,7 +3656,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void STIRLING2_NUMBER(int pos) {
+	void STIRLING2_NUMBER(int pos) {
 		double n = getTokenValue(pos+1);
 		double k = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.Stirling2Number(n, k) );
@@ -3666,7 +3666,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void WORPITZKY_NUMBER(int pos) {
+	void WORPITZKY_NUMBER(int pos) {
 		double n = getTokenValue(pos+1);
 		double k = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.worpitzkyNumber(n, k) );
@@ -3676,7 +3676,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void EULER_NUMBER(int pos) {
+	void EULER_NUMBER(int pos) {
 		double n = getTokenValue(pos+1);
 		double k = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.eulerNumber(n, k) );
@@ -3686,7 +3686,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void KRONECKER_DELTA(int pos) {
+	void KRONECKER_DELTA(int pos) {
 		double i = getTokenValue(pos+1);
 		double j = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.kroneckerDelta(i, j) );
@@ -3696,7 +3696,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void EULER_POLYNOMIAL(int pos) {
+	void EULER_POLYNOMIAL(int pos) {
 		double m = getTokenValue(pos+1);
 		double x = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.eulerPolynomial(m, x) );
@@ -3706,7 +3706,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void HARMONIC2_NUMBER(int pos) {
+	void HARMONIC2_NUMBER(int pos) {
 		double x = getTokenValue(pos+1);
 		double n = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.harmonicNumber(x, n) );
@@ -3716,7 +3716,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ROUND(int pos) {
+	void ROUND(int pos) {
 		double value = getTokenValue(pos+1);
 		int places = (int)getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.round(value, places) );
@@ -3726,7 +3726,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void RND_VAR_UNIFORM_CONT(int pos) {
+	void RND_VAR_UNIFORM_CONT(int pos) {
 		double a = getTokenValue(pos+1);
 		double b = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, ProbabilityDistributions.rndUniformContinuous(a, b, ProbabilityDistributions.randomGenerator) );
@@ -3736,7 +3736,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void RND_VAR_UNIFORM_DISCR(int pos) {
+	void RND_VAR_UNIFORM_DISCR(int pos) {
 		int a = (int)getTokenValue(pos+1);
 		int b = (int)getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, ProbabilityDistributions.rndInteger(a, b, ProbabilityDistributions.randomGenerator) );
@@ -3746,7 +3746,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void RND_NORMAL(int pos) {
+	void RND_NORMAL(int pos) {
 		double mean = getTokenValue(pos+1);
 		double stddev = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, ProbabilityDistributions.rndNormal(mean, stddev, ProbabilityDistributions.randomGenerator) );
@@ -3756,7 +3756,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void NDIG(int pos) {
+	void NDIG(int pos) {
 		double number = getTokenValue(pos+1);
 		double numeralSystemBase = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, NumberTheory.numberOfDigits(number, numeralSystemBase) );
@@ -3766,7 +3766,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void DIGIT10(int pos) {
+	void DIGIT10(int pos) {
 		double number = getTokenValue(pos+1);
 		double position = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, NumberTheory.digitAtPosition(number, position) );
@@ -3776,7 +3776,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void FACTVAL(int pos) {
+	void FACTVAL(int pos) {
 		double number = getTokenValue(pos+1);
 		double id = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, NumberTheory.primeFactorValue(number, id) );
@@ -3786,7 +3786,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void FACTEXP(int pos) {
+	void FACTEXP(int pos) {
 		double number = getTokenValue(pos+1);
 		double id = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, NumberTheory.primeFactorExponent(number, id) );
@@ -3796,7 +3796,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ROOT(int pos) {
+	void ROOT(int pos) {
 		double n = getTokenValue(pos+1);
 		double x = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, MathFunctions.root(n, x) );
@@ -3806,7 +3806,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void INC_GAMMA_LOWER(int pos) {
+	void INC_GAMMA_LOWER(int pos) {
 		double s = getTokenValue(pos+1);
 		double x = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, SpecialFunctions.incompleteGammaLower(s, x) );
@@ -3816,7 +3816,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void INC_GAMMA_UPPER(int pos) {
+	void INC_GAMMA_UPPER(int pos) {
 		double s = getTokenValue(pos+1);
 		double x = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, SpecialFunctions.incompleteGammaUpper(s, x) );
@@ -3826,7 +3826,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void REG_GAMMA_LOWER(int pos) {
+	void REG_GAMMA_LOWER(int pos) {
 		double s = getTokenValue(pos+1);
 		double x = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, SpecialFunctions.regularizedGammaLowerP(s, x) );
@@ -3836,7 +3836,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void REG_GAMMA_UPPER(int pos) {
+	void REG_GAMMA_UPPER(int pos) {
 		double s = getTokenValue(pos+1);
 		double x = getTokenValue(pos+2);
 		f2SetDecreaseRemove(pos, SpecialFunctions.regularizedGammaUpperQ(s, x) );
@@ -3846,7 +3846,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void IF_CONDITION(int pos) {
+	void IF_CONDITION(int pos) {
 		/*
 		 * Get condition string
 		 * 1st parameter
@@ -3867,7 +3867,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void IFF(int pos) {
+	void IFF(int pos) {
 		/*
 		 * Get condition string
 		 * 1st parameter
@@ -3933,7 +3933,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param pos token index (position)
 	 */
-	private void IF(int pos) {
+	void IF(int pos) {
 		double ifCondition = tokensList.get(pos+1).tokenValue;
 		double ifTrue = tokensList.get(pos+2).tokenValue;
 		double ifFalse = tokensList.get(pos+3).tokenValue;
@@ -3949,7 +3949,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CHI(int pos) {
+	void CHI(int pos) {
 		double x = getTokenValue(pos+1);
 		double a = getTokenValue(pos+2);
 		double b = getTokenValue(pos+3);
@@ -3960,7 +3960,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CHI_LR(int pos) {
+	void CHI_LR(int pos) {
 		double x = getTokenValue(pos+1);
 		double a = getTokenValue(pos+2);
 		double b = getTokenValue(pos+3);
@@ -3971,7 +3971,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CHI_L(int pos) {
+	void CHI_L(int pos) {
 		double x = getTokenValue(pos+1);
 		double a = getTokenValue(pos+2);
 		double b = getTokenValue(pos+3);
@@ -3982,7 +3982,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CHI_R(int pos) {
+	void CHI_R(int pos) {
 		double x = getTokenValue(pos+1);
 		double a = getTokenValue(pos+2);
 		double b = getTokenValue(pos+3);
@@ -3993,7 +3993,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void PDF_UNIFORM_CONT(int pos) {
+	void PDF_UNIFORM_CONT(int pos) {
 		double x = getTokenValue(pos+1);
 		double a = getTokenValue(pos+2);
 		double b = getTokenValue(pos+3);
@@ -4004,7 +4004,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CDF_UNIFORM_CONT(int pos) {
+	void CDF_UNIFORM_CONT(int pos) {
 		double x = getTokenValue(pos+1);
 		double a = getTokenValue(pos+2);
 		double b = getTokenValue(pos+3);
@@ -4015,7 +4015,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void QNT_UNIFORM_CONT(int pos) {
+	void QNT_UNIFORM_CONT(int pos) {
 		double q = getTokenValue(pos+1);
 		double a = getTokenValue(pos+2);
 		double b = getTokenValue(pos+3);
@@ -4026,7 +4026,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void PDF_NORMAL(int pos) {
+	void PDF_NORMAL(int pos) {
 		double x = getTokenValue(pos+1);
 		double mean = getTokenValue(pos+2);
 		double stddev = getTokenValue(pos+3);
@@ -4037,7 +4037,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CDF_NORMAL(int pos) {
+	void CDF_NORMAL(int pos) {
 		double x = getTokenValue(pos+1);
 		double mean = getTokenValue(pos+2);
 		double stddev = getTokenValue(pos+3);
@@ -4048,7 +4048,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void QNT_NORMAL(int pos) {
+	void QNT_NORMAL(int pos) {
 		double q = getTokenValue(pos+1);
 		double mean = getTokenValue(pos+2);
 		double stddev = getTokenValue(pos+3);
@@ -4059,7 +4059,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void DIGIT(int pos) {
+	void DIGIT(int pos) {
 		double number = getTokenValue(pos+1);
 		double position = getTokenValue(pos+2);
 		double numeralSystemBase = getTokenValue(pos+3);
@@ -4069,7 +4069,7 @@ public class Expression extends PrimitiveElement {
 	 * Incomplete beta special function
 	 * @param      pos                 the token position
 	 */
-	private void INC_BETA(int pos) {
+	void INC_BETA(int pos) {
 		double x = getTokenValue(pos+1);
 		double a = getTokenValue(pos+2);
 		double b = getTokenValue(pos+3);
@@ -4079,7 +4079,7 @@ public class Expression extends PrimitiveElement {
 	 * Regularized incomplete beta special function
 	 * @param      pos                 the token position
 	 */
-	private void REG_BETA(int pos) {
+	void REG_BETA(int pos) {
 		double x = getTokenValue(pos+1);
 		double a = getTokenValue(pos+2);
 		double b = getTokenValue(pos+3);
@@ -4095,7 +4095,7 @@ public class Expression extends PrimitiveElement {
 	 * @param      tokenId             missing token id
 	 * @param      tokenTypeId         missing token type id
 	 */
-	private void updateMissingTokens(List<Token> tokens, String keyWord, int tokenId, int tokenTypeId) {
+	void updateMissingTokens(List<Token> tokens, String keyWord, int tokenId, int tokenTypeId) {
 		for (Token t : tokens)
 			if ( (t.tokenTypeId == ConstantValue.NaN) && (t.tokenStr.equals(keyWord))) {
 				t.keyWord = keyWord;
@@ -4110,7 +4110,7 @@ public class Expression extends PrimitiveElement {
 	 * @param index      Index parameter of the iterative operator
 	 * @param iterParams     Parameters list of the iterative operator
 	 */
-	private void updateMissingTokens(ArgumentParameter index, IterativeOperatorParameters iterParams) {
+	void updateMissingTokens(ArgumentParameter index, IterativeOperatorParameters iterParams) {
 		if (index.presence == Argument.NOT_FOUND) {
 			updateMissingTokens(iterParams.indexParam.tokens, iterParams.indexParam.paramStr, index.index, Argument.TYPE_ID );
 			updateMissingTokens(iterParams.fromParam.tokens, iterParams.indexParam.paramStr, index.index, Argument.TYPE_ID );
@@ -4124,7 +4124,7 @@ public class Expression extends PrimitiveElement {
 	 * @param index      Index parameter of the iterative operator
 	 * @param iterParams     Parameters list of the iterative operator
 	 */
-	private void evalFromToDeltaParameters(ArgumentParameter index, IterativeOperatorParameters iterParams) {
+	void evalFromToDeltaParameters(ArgumentParameter index, IterativeOperatorParameters iterParams) {
 		/*
 		 * Create from, to, fun expression
 		 * based on the from string
@@ -4167,7 +4167,7 @@ public class Expression extends PrimitiveElement {
      *
 	 * @param      pos                 the token position
 	 */
-	private void SUM(int pos) {
+	void SUM(int pos) {
 		IterativeOperatorParameters iterParams = new IterativeOperatorParameters( getFunctionParameters(pos, tokensList) );
 		ArgumentParameter index = getParamArgument(iterParams.indexParam.paramStr);
 		updateMissingTokens(index, iterParams);
@@ -4186,7 +4186,7 @@ public class Expression extends PrimitiveElement {
      *
 	 * @param      pos                 the token position
 	 */
-	private void PROD(int pos) {
+	void PROD(int pos) {
 		IterativeOperatorParameters iterParams = new IterativeOperatorParameters( getFunctionParameters(pos, tokensList) );
 		ArgumentParameter index = getParamArgument(iterParams.indexParam.paramStr);
 		updateMissingTokens(index, iterParams);
@@ -4205,7 +4205,7 @@ public class Expression extends PrimitiveElement {
      *
 	 * @param      pos                 the token position
 	 */
-	private void MIN(int pos) {
+	void MIN(int pos) {
 		IterativeOperatorParameters iterParams = new IterativeOperatorParameters( getFunctionParameters(pos, tokensList) );
 		ArgumentParameter index = getParamArgument(iterParams.indexParam.paramStr);
 		updateMissingTokens(index, iterParams);
@@ -4224,7 +4224,7 @@ public class Expression extends PrimitiveElement {
      *
 	 * @param      pos                 the token position
 	 */
-	private void MAX(int pos) {
+	void MAX(int pos) {
 		IterativeOperatorParameters iterParams = new IterativeOperatorParameters( getFunctionParameters(pos, tokensList) );
 		ArgumentParameter index = getParamArgument(iterParams.indexParam.paramStr);
 		updateMissingTokens(index, iterParams);
@@ -4243,7 +4243,7 @@ public class Expression extends PrimitiveElement {
      *
 	 * @param      pos                 the token position
 	 */
-	private void AVG(int pos) {
+	void AVG(int pos) {
 		IterativeOperatorParameters iterParams = new IterativeOperatorParameters( getFunctionParameters(pos, tokensList) );
 		ArgumentParameter index = getParamArgument(iterParams.indexParam.paramStr);
 		updateMissingTokens(index, iterParams);
@@ -4262,7 +4262,7 @@ public class Expression extends PrimitiveElement {
      *
 	 * @param      pos                 the token position
 	 */
-	private void VAR(int pos) {
+	void VAR(int pos) {
 		IterativeOperatorParameters iterParams = new IterativeOperatorParameters( getFunctionParameters(pos, tokensList) );
 		ArgumentParameter index = getParamArgument(iterParams.indexParam.paramStr);
 		updateMissingTokens(index, iterParams);
@@ -4281,7 +4281,7 @@ public class Expression extends PrimitiveElement {
      *
 	 * @param      pos                 the token position
 	 */
-	private void STD(int pos) {
+	void STD(int pos) {
 		IterativeOperatorParameters iterParams = new IterativeOperatorParameters( getFunctionParameters(pos, tokensList) );
 		ArgumentParameter index = getParamArgument(iterParams.indexParam.paramStr);
 		updateMissingTokens(index, iterParams);
@@ -4296,7 +4296,7 @@ public class Expression extends PrimitiveElement {
 	 * @param      pos                 the token position
 	 * @param      derivativeType      the type of derivative (LEFT, RIGHT, ...)
 	 */
-	private void DERIVATIVE(int pos, int derivativeType) {
+	void DERIVATIVE(int pos, int derivativeType) {
 		/*
 		 * 2 params - der( f(x), x )
 		 * 3 params - der( f(x), x, x0 )
@@ -4389,7 +4389,7 @@ public class Expression extends PrimitiveElement {
 	 * @param      pos                 the token position
 	 * @param      derivativeType      the type of derivative (left, right, etc...)
 	 */
-	private void DERIVATIVE_NTH(int pos, int derivativeType) {
+	void DERIVATIVE_NTH(int pos, int derivativeType) {
 		final double DEF_EPS		= 1E-6;
 		/*
 		 * Default max number of steps
@@ -4453,7 +4453,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void INTEGRAL(int pos) {
+	void INTEGRAL(int pos) {
 		/**
 		 * Default epsilon
 		 */
@@ -4499,7 +4499,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void SOLVE(int pos) {
+	void SOLVE(int pos) {
 		/**
 		 * Default epsilon
 		 */
@@ -4545,7 +4545,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void FORWARD_DIFFERENCE(int pos) {
+	void FORWARD_DIFFERENCE(int pos) {
 		List<FunctionParameter> params = getFunctionParameters(pos, tokensList);
 		FunctionParameter funParam = params.get(0);
 		FunctionParameter xParam = params.get(1);
@@ -4569,7 +4569,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BACKWARD_DIFFERENCE(int pos) {
+	void BACKWARD_DIFFERENCE(int pos) {
 		List<FunctionParameter> params = getFunctionParameters(pos, tokensList);
 		FunctionParameter funParam = params.get(0);
 		FunctionParameter xParam = params.get(1);
@@ -4594,7 +4594,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void MIN_VARIADIC(int pos) {
+	void MIN_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, NumberTheory.min( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4604,7 +4604,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param pos token index (position)
 	 */
-	private void MAX_VARIADIC(int pos) {
+	void MAX_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, NumberTheory.max( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4614,7 +4614,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param pos token index (position)
 	 */
-	private void SUM_VARIADIC(int pos) {
+	void SUM_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, NumberTheory.sum( mXparser.arrayList2double(numbers) ), numbers.size(), true);
 	}
@@ -4624,7 +4624,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param pos token index (position)
 	 */
-	private void PROD_VARIADIC(int pos) {
+	void PROD_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, NumberTheory.prod( mXparser.arrayList2double(numbers) ), numbers.size(), true);
 	}
@@ -4634,7 +4634,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param pos token index (position)
 	 */
-	private void AVG_VARIADIC(int pos) {
+	void AVG_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, Statistics.avg( mXparser.arrayList2double(numbers) ), numbers.size(), true);
 	}
@@ -4644,7 +4644,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param pos token index (position)
 	 */
-	private void VAR_VARIADIC(int pos) {
+	void VAR_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, Statistics.var( mXparser.arrayList2double(numbers) ), numbers.size(), true);
 	}
@@ -4654,7 +4654,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param pos token index (position)
 	 */
-	private void STD_VARIADIC(int pos) {
+	void STD_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, Statistics.std( mXparser.arrayList2double(numbers) ), numbers.size(), true);
 	}
@@ -4663,7 +4663,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CONTINUED_FRACTION(int pos) {
+	void CONTINUED_FRACTION(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, MathFunctions.continuedFraction( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4672,7 +4672,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void CONTINUED_POLYNOMIAL(int pos) {
+	void CONTINUED_POLYNOMIAL(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, MathFunctions.continuedPolynomial( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4681,7 +4681,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void GCD(int pos) {
+	void GCD(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, NumberTheory.gcd( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4690,7 +4690,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void LCM(int pos) {
+	void LCM(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, NumberTheory.lcm( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4699,7 +4699,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void RND_LIST(int pos) {
+	void RND_LIST(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		int n = numbers.size();
 		int i = ProbabilityDistributions.rndIndex(n, ProbabilityDistributions.randomGenerator);
@@ -4710,7 +4710,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void COALESCE(int pos) {
+	void COALESCE(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, MathFunctions.coalesce( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4719,7 +4719,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void OR_VARIADIC(int pos) {
+	void OR_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, BooleanAlgebra.orVariadic( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4728,7 +4728,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void AND_VARIADIC(int pos) {
+	void AND_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, BooleanAlgebra.andVariadic( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4737,7 +4737,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void XOR_VARIADIC(int pos) {
+	void XOR_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, BooleanAlgebra.xorVariadic( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4746,7 +4746,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ARGMIN_VARIADIC(int pos) {
+	void ARGMIN_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, NumberTheory.argmin( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4755,7 +4755,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void ARGMAX_VARIADIC(int pos) {
+	void ARGMAX_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, NumberTheory.argmax( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4764,7 +4764,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void MEDIAN_VARIADIC(int pos) {
+	void MEDIAN_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, Statistics.median( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4773,7 +4773,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void MODE_VARIADIC(int pos) {
+	void MODE_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, Statistics.mode( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4782,7 +4782,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void BASE_VARIADIC(int pos) {
+	void BASE_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, NumberTheory.convOthBase2Decimal( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4791,7 +4791,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param      pos                 the token position
 	 */
-	private void NDIST_VARIADIC(int pos) {
+	void NDIST_VARIADIC(int pos) {
 		List<Double> numbers = getNumbers(pos);
 		variadicSetDecreaseRemove(pos, NumberTheory.numberOfDistValues( mXparser.arrayList2double(numbers) ), numbers.size() );
 	}
@@ -4801,7 +4801,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param pos token index (position)
 	 */
-	private void COMMA(int pos) {
+	void COMMA(int pos) {
 		tokensList.remove(pos);
 	}
 	/**
@@ -4811,7 +4811,7 @@ public class Expression extends PrimitiveElement {
 	 * @param lPos    left token index (position)
 	 * @param rPos    roght token index (position)
 	 */
-	private void PARENTHESES(int lPos, int rPos) {
+	void PARENTHESES(int lPos, int rPos) {
 		for (int p = lPos; p <= rPos; p++)
 			tokensList.get(p).tokenLevel--;
 		tokensList.remove(rPos);
@@ -4859,7 +4859,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @return     true if syntax is ok
 	 */
-	private int checkCalculusParameter(String param) {
+	int checkCalculusParameter(String param) {
 		int errors = 0;
 		for (KeyWord kw : keyWordsList)
 			if (kw.wordTypeId != Argument.TYPE_ID)
@@ -4876,7 +4876,7 @@ public class Expression extends PrimitiveElement {
 	 * @return     true if argument is known,
 	 *             otherwise returns false.
 	 */
-	private boolean checkIfKnownArgument(FunctionParameter param) {
+	boolean checkIfKnownArgument(FunctionParameter param) {
 		if (param.tokens.size() > 1)
 			return false;
 		Token t = param.tokens.get(0);
@@ -4892,7 +4892,7 @@ public class Expression extends PrimitiveElement {
 	 * @return     true if there is only 1 token with unknown type,
 	 *             otherwise returns false.
 	 */
-	private boolean checkIfUnknownToken(FunctionParameter param) {
+	boolean checkIfUnknownToken(FunctionParameter param) {
 		if (param.tokens.size() > 1)
 			return false;
 		Token t = param.tokens.get(0);
@@ -4907,7 +4907,7 @@ public class Expression extends PrimitiveElement {
 	 * @return     true if syntax was correct,
 	 *             otherwise returns false.
 	 */
-	private boolean checkSyntax(String level, boolean functionWithBodyExt) {
+	boolean checkSyntax(String level, boolean functionWithBodyExt) {
 		if ( (expressionWasModified == false) && (syntaxStatus == NO_SYNTAX_ERRORS) && (optionsChangesetNumber == mXparser.optionsChangesetNumber) ) {
 			errorMessage = level + "already checked - no errors!\n";
 			recursionCallPending = false;
@@ -5789,7 +5789,7 @@ public class Expression extends PrimitiveElement {
 	 * Calculates unary function
 	 * @param pos    token position
 	 */
-	private void f1ArgCalc(int pos) {
+	void f1ArgCalc(int pos) {
 		switch (tokensList.get(pos).tokenId) {
 		case Function1Arg.SIN_ID: SIN(pos); break;
 		case Function1Arg.COS_ID: COS(pos); break;
@@ -5859,7 +5859,7 @@ public class Expression extends PrimitiveElement {
 	 * Calculates binary function
 	 * @param pos   Token position
 	 */
-	private void f2ArgCalc(int pos) {
+	void f2ArgCalc(int pos) {
 		switch (tokensList.get(pos).tokenId) {
 		case Function2Arg.LOG_ID: LOG(pos); break;
 		case Function2Arg.MOD_ID: MOD(pos); break;
@@ -5894,7 +5894,7 @@ public class Expression extends PrimitiveElement {
 	 * Calculates function with 3 arguments
 	 * @param pos   Token position
 	 */
-	private void f3ArgCalc(int pos) {
+	void f3ArgCalc(int pos) {
 		switch (tokensList.get(pos).tokenId) {
 		case Function3Arg.IF_ID: IF(pos); break;
 		case Function3Arg.CHI_ID: CHI(pos); break;
@@ -5916,7 +5916,7 @@ public class Expression extends PrimitiveElement {
 	 * Calculates Variadic function
 	 * @param pos   Token position
 	 */
-	private void variadicFunCalc(int pos) {
+	void variadicFunCalc(int pos) {
 		switch (tokensList.get(pos).tokenId) {
 		case FunctionVariadic.IFF_ID: IFF(pos); break;
 		case FunctionVariadic.MIN_ID: MIN_VARIADIC(pos); break;
@@ -5947,7 +5947,7 @@ public class Expression extends PrimitiveElement {
 	 * Calculates calculus operators
 	 * @param pos
 	 */
-	private void calculusCalc(int pos) {
+	void calculusCalc(int pos) {
 		switch (tokensList.get(pos).tokenId) {
 		case CalculusOperator.SUM_ID: SUM(pos); break;
 		case CalculusOperator.PROD_ID: PROD(pos); break;
@@ -5970,7 +5970,7 @@ public class Expression extends PrimitiveElement {
 	 * Calculates boolean operators
 	 * @param pos
 	 */
-	private void bolCalc(int pos) {
+	void bolCalc(int pos) {
 		switch (tokensList.get(pos).tokenId) {
 		case BooleanOperator.AND_ID: AND(pos); break;
 		case BooleanOperator.CIMP_ID: CIMP(pos); break;
@@ -5988,7 +5988,7 @@ public class Expression extends PrimitiveElement {
 	 * Calculates Bitwise operators
 	 * @param pos
 	 */
-	private void bitwiseCalc(int pos) {
+	void bitwiseCalc(int pos) {
 		switch (tokensList.get(pos).tokenId) {
 		case BitwiseOperator.AND_ID: BITWISE_AND(pos); break;
 		case BitwiseOperator.OR_ID: BITWISE_OR(pos); break;
@@ -6008,14 +6008,14 @@ public class Expression extends PrimitiveElement {
 	 * parser keywords relates to User Defined Functions
 	 * i.e.: par(i), [npar]
 	 */
-	private void addUDFSpecificParserKeyWords() {
+	void addUDFSpecificParserKeyWords() {
 		addKeyWord(Function1Arg.PARAM_STR, Function1Arg.PARAM_DESC, Function1Arg.PARAM_ID, Function1Arg.PARAM_SYN, Function1Arg.PARAM_SINCE, Function1Arg.TYPE_ID);
 		addKeyWord(ConstantValue.NPAR_STR, ConstantValue.NPAR_DESC, ConstantValue.NPAR_ID, ConstantValue.NPAR_SYN, ConstantValue.NPAR_SINCE, ConstantValue.TYPE_ID);
 	}
 	/**
 	 * Creates parser key words list
 	 */
-	private void addParserKeyWords() {
+	void addParserKeyWords() {
 		/*
 		 * Operators key words
 		 */
@@ -6538,7 +6538,7 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * Adds arguments key words to the keywords list
 	 */
-	private void addArgumentsKeyWords() {
+	void addArgumentsKeyWords() {
 		int argumentsNumber = argumentsList.size();
 		for (int argumentIndex = 0; argumentIndex<argumentsNumber; argumentIndex++) {
 			Argument arg = argumentsList.get(argumentIndex);
@@ -6551,7 +6551,7 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * Adds functions key words to the keywords list
 	 */
-	private void addFunctionsKeyWords() {
+	void addFunctionsKeyWords() {
 		int functionsNumber = functionsList.size();
 		for (int functionIndex = 0; functionIndex<functionsNumber; functionIndex++) {
 			Function fun = functionsList.get(functionIndex);
@@ -6569,7 +6569,7 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * Adds constants key words to the keywords list
 	 */
-	private void addConstantsKeyWords() {
+	void addConstantsKeyWords() {
 		int constantsNumber = constantsList.size();
 		for (int constantIndex = 0; constantIndex < constantsNumber; constantIndex++) {
 			Constant c = constantsList.get(constantIndex);
@@ -6579,7 +6579,7 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * Final validation of key words
 	 */
-	private void validateParserKeyWords() {
+	void validateParserKeyWords() {
 		if (mXparser.overrideBuiltinTokens) {
 			/*
 			 * Building list of user defined tokens
@@ -6621,7 +6621,7 @@ public class Expression extends PrimitiveElement {
 	 * @param wordId
 	 * @param wordTypeId
 	 */
-	private void addKeyWord(String wordString, String wordDescription, int wordId, String wordSyntax, String wordSince, int wordTypeId) {
+	void addKeyWord(String wordString, String wordDescription, int wordId, String wordSyntax, String wordSince, int wordTypeId) {
 		if ( (mXparser.tokensToRemove.size() > 0) || (mXparser.tokensToModify.size() > 0) )
 			if (	(wordTypeId == Function1Arg.TYPE_ID) ||
 					(wordTypeId == Function2Arg.TYPE_ID) ||
@@ -6652,7 +6652,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param token   The token not know to the parser
 	 */
-	private void checkOtherNumberBases(Token token) {
+	void checkOtherNumberBases(Token token) {
 		int dotPos = 0;
 		int tokenStrLength = token.tokenStr.length();
 		/* find dot position */
@@ -6727,7 +6727,7 @@ public class Expression extends PrimitiveElement {
 	 *
 	 * @param token   The token not know to the parser
 	 */
-	private void checkFraction(Token token) {
+	void checkFraction(Token token) {
 		int tokenStrLength = token.tokenStr.length();
 		if (tokenStrLength < 3) return;
 		if (!mXparser.regexMatch(token.tokenStr, ParserSymbol.FRACTION)) return;
@@ -6772,7 +6772,7 @@ public class Expression extends PrimitiveElement {
 	 * @param      tokenStr            the token string
 	 * @param      keyWord             the key word
 	 */
-	private void addToken(String tokenStr, KeyWord keyWord) {
+	void addToken(String tokenStr, KeyWord keyWord) {
 		Token token = new Token();
 		initialTokens.add(token);
 		token.tokenStr = tokenStr;
@@ -6791,7 +6791,7 @@ public class Expression extends PrimitiveElement {
 		}
 	}
 
-	private boolean isNotSpecialChar(char c) {
+	boolean isNotSpecialChar(char c) {
 		if (c == '+') return false;
 		if (c == '-') return false;
 		if (c == '+') return false;
@@ -6817,7 +6817,7 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * Tokenizing expression string
 	 */
-	private void tokenizeExpressionString() {
+	void tokenizeExpressionString() {
 		/*
 		 * Add parser and argument key words
 		 */
@@ -7245,7 +7245,7 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * Evaluates tokens levels
 	 */
-	private void evaluateTokensLevels() {
+	void evaluateTokensLevels() {
 		int tokenLevel = 0;
 		Stack<TokenStackElement> tokenStack =  new Stack<TokenStackElement>();
 		boolean precedingFunction = false;
@@ -7289,16 +7289,16 @@ public class Expression extends PrimitiveElement {
 	/**
 	 * copy initial tokens lito to tokens list
 	 */
-	private void copyInitialTokens() {
+	void copyInitialTokens() {
 		tokensList = new ArrayList<Token>();
 		for (Token token : initialTokens) {
 			tokensList.add(token.clone());
 		}
 	}
-	private final String FUNCTION = "function";
-	private final String ARGUMENT = "argument";
-	private final String UNITCONST = "unit/const";
-	private final String ERROR    = "error";
+	final String FUNCTION = "function";
+	final String ARGUMENT = "argument";
+	final String UNITCONST = "unit/const";
+	final String ERROR    = "error";
 	/**
 	 * Tokenizes expression string and returns tokens list,
 	 * including: string, type, level.
@@ -7408,7 +7408,7 @@ public class Expression extends PrimitiveElement {
 	/*
 	 * Text adjusting.
 	 */
-	private static final String getLeftSpaces(String maxStr, String str) {
+	static final String getLeftSpaces(String maxStr, String str) {
 		String spc = "";
 		for (int i=0; i<maxStr.length() - str.length(); i++)
 			spc = spc + " ";
@@ -7417,7 +7417,7 @@ public class Expression extends PrimitiveElement {
 	/*
 	 * Text adjusting.
 	 */
-	private static final String getRightSpaces(String maxStr, String str) {
+	static final String getRightSpaces(String maxStr, String str) {
 		String spc = "";
 		for (int i=0; i<maxStr.length() - str.length(); i++)
 			spc = " " + spc;
@@ -7427,7 +7427,7 @@ public class Expression extends PrimitiveElement {
 	 * Shows parsing (verbose mode purposes).
 	 *
 	 */
-	private void showParsing(int lPos, int rPos) {
+	void showParsing(int lPos, int rPos) {
 		mXparser.consolePrint(" ---> ");
 		for (int i=lPos; i<=rPos; i++) {
 			Token token = tokensList.get(i);
@@ -7628,7 +7628,7 @@ public class Expression extends PrimitiveElement {
 	/*
 	 * show arguments
 	 */
-	private void showArguments() {
+	void showArguments() {
 		for (Argument a : argumentsList) {
 			boolean vMode = a.getVerboseMode();
 			a.setSilentMode();
@@ -7642,7 +7642,7 @@ public class Expression extends PrimitiveElement {
 	 * @param info
 	 * @param withExpressionString
 	 */
-	private void printSystemInfo(String info, boolean withExpressionString) {
+	void printSystemInfo(String info, boolean withExpressionString) {
 		if (withExpressionString)
 			mXparser.consolePrint( /*"[" + this +  "]" +  */ "[" + description + "]" + "[" + expressionString + "] " + info);
 		else

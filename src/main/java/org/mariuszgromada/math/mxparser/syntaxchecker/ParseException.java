@@ -18,7 +18,7 @@ public class ParseException extends Exception {
    * Increment only if the <i>serialized</i> form of the
    * class changes.
    */
-  private static final long serialVersionUID = 1L;
+  static final long serialVersionUID = 1L;
 
   /**
    * This constructor is used by the method "generateParseException"
@@ -85,7 +85,7 @@ public class ParseException extends Exception {
    * from the parser) the correct error message
    * gets displayed.
    */
-  private static String initialise(Token currentToken,
+  static String initialise(Token currentToken,
                            int[][] expectedTokenSequences,
                            String[] tokenImage) {
     String eol = System.getProperty("line.separator", "\n");

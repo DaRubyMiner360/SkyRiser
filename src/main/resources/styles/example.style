@@ -2,8 +2,6 @@
   // This template makes a plain box with the first color in the palate.
   // This is one of the built-in templates
 
-  "format": "new",
-
   // The building part
   "actions": [
     {

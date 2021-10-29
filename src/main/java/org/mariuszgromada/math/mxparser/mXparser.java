@@ -130,10 +130,10 @@ public final class mXparser {
 	 * @see mXparser.#consolePrintln(Object)
 	 * @see mXparser.#consolePrint(Object)
 	 */
-	private static volatile String CONSOLE_OUTPUT = "";
-	private static volatile String CONSOLE_PREFIX = "[mXparser-v." + VERSION + " bin " + BUIT_FOR + "] ";
-	private static volatile String CONSOLE_OUTPUT_PREFIX = CONSOLE_PREFIX;
-	private static volatile int CONSOLE_ROW_NUMBER = 1;
+	static volatile String CONSOLE_OUTPUT = "";
+	static volatile String CONSOLE_PREFIX = "[mXparser-v." + VERSION + " bin " + BUIT_FOR + "] ";
+	static volatile String CONSOLE_OUTPUT_PREFIX = CONSOLE_PREFIX;
+	static volatile int CONSOLE_ROW_NUMBER = 1;
 	/**
 	 * Prime numbers cache
 	 */
@@ -142,7 +142,7 @@ public final class mXparser {
 	/**
 	 * Threads number settings
 	 */
-	private static int THREADS_NUMBER = Runtime.getRuntime().availableProcessors();
+	static int THREADS_NUMBER = Runtime.getRuntime().availableProcessors();
 	/**
 	 * Empty expression for general help purposes.
 	 */
@@ -214,7 +214,7 @@ public final class mXparser {
 	/**
 	 * Indicator whether to call cancel current calculation
 	 */
-	private static volatile boolean cancelCurrentCalculationFlag = false;
+	static volatile boolean cancelCurrentCalculationFlag = false;
 	/**
 	 * Initialization of prime numbers cache.
 	 * Cache size according to {@link PrimesCache#DEFAULT_MAX_NUM_IN_CACHE}

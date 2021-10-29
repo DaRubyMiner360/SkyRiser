@@ -23,20 +23,20 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Style {
-    public String format = "new";
-
     public List<Action> actions = new ArrayList<>();
     public List<Option> options = new ArrayList<>();
 
+    public boolean rotate = true;
+
     public String toString() {
-        return "Style [ format: " + format.toLowerCase() + ", actions: " + actions + ", options: " + options + " ]";
+        return "Style [ actions: " + actions + ", options: " + options + ", rotate: " + rotate + " ]";
     }
 
     @Override
     public boolean equals(Object obj) {
         try {
             Style other  = (Style) obj;
-            return actions.equals(other.actions) && options.equals(other.options) && format.equalsIgnoreCase(other.format);
+            return actions.equals(other.actions) && options.equals(other.options) && rotate == other.rotate;
         } catch (Exception e) {
             return false;
         }

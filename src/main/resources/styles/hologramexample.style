@@ -1,8 +1,6 @@
 {
   // This is one of the built-in templates
 
-  "format": "new",
-
   // The building part
   "actions": [
     {

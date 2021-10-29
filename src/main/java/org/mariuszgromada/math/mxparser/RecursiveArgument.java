@@ -121,12 +121,12 @@ public class RecursiveArgument extends Argument {
 	/**
 	 * Base values
 	 */
-	private List<Double> baseValues;
+	List<Double> baseValues;
 	/**
 	 * To avoid never ending loops
 	 */
-	private int recursiveCounter;
-	private int startingIndex;
+	int recursiveCounter;
+	int startingIndex;
 	/**
 	 * Constructor - creates recursive argument.
 	 *

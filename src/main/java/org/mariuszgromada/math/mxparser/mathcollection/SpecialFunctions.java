@@ -106,13 +106,13 @@ public final class SpecialFunctions {
 	/**
 	 * Constants for Exponential integral function Ei(x) calculation
 	 */
-	private static final double EI_DBL_EPSILON = Math.ulp(1.0);
-	private static final double EI_EPSILON = 10.0 * EI_DBL_EPSILON;
+	static final double EI_DBL_EPSILON = Math.ulp(1.0);
+	static final double EI_EPSILON = 10.0 * EI_DBL_EPSILON;
 	/**
 	 * Supporting function
 	 * while Exponential integral function Ei(x) calculation
 	 */
-	private static double continuedFractionEi(double x) {
+	static double continuedFractionEi(double x) {
 		double Am1 = 1.0;
 		double A0 = 0.0;
 		double Bm1 = 0.0;
@@ -148,7 +148,7 @@ public final class SpecialFunctions {
 	 * Supporting function
 	 * while Exponential integral function Ei(x) calculation
 	 */
-	private static double powerSeriesEi(double x) {
+	static double powerSeriesEi(double x) {
 		double xn = -x;
 		double Sn = -x;
 		double Sm1 = 0.0;
@@ -174,7 +174,7 @@ public final class SpecialFunctions {
 	 * Supporting function
 	 * while Exponential integral function Ei(x) calculation
 	 */
-	private static double argumentAdditionSeriesEi(double x) {
+	static double argumentAdditionSeriesEi(double x) {
 		final int k = (int) (x + 0.5);
 		int j = 0;
 		final double xx = k;
@@ -279,7 +279,7 @@ public final class SpecialFunctions {
 	 * @param invert
 	 * @return
 	 */
-	private static final double erfImp(double z, boolean invert) {
+	static final double erfImp(double z, boolean invert) {
     	if (z < 0) {
         	if (!invert) return -erfImp(-z, false);
         	if (z < -0.5) return 2 - erfImp(-z, true);
@@ -370,7 +370,7 @@ public final class SpecialFunctions {
 	 * @param s
 	 * @return
 	 */
-	private static final double erfInvImpl(double p, double q, double s) {
+	static final double erfInvImpl(double p, double q, double s) {
     	double result;
     	if (p <= 0.5) {
     		final float y = 0.0891314744949340820313f;
@@ -419,7 +419,7 @@ public final class SpecialFunctions {
 	 * @param n Integer number
 	 * @return  Returns Gamma function for the integers.
 	 */
-	private static final double gammaInt(long n) {
+	static final double gammaInt(long n) {
 		if (n == 0) return MathConstants.EULER_MASCHERONI;
 		if (n == 1) return 1;
 		if (n == 2) return 1;
@@ -785,8 +785,8 @@ public final class SpecialFunctions {
 
 		return result;
 	}
-	private static final int doubleWidth = 53;
-	private static final double doublePrecision = Math.pow(2, -doubleWidth);
+	static final int doubleWidth = 53;
+	static final double doublePrecision = Math.pow(2, -doubleWidth);
 
 	/**
 	 * Log Beta special function
@@ -990,7 +990,7 @@ public final class SpecialFunctions {
 	/*
 	 * halleyIteration epsilon
 	 */
-	private static final double GSL_DBL_EPSILON = 2.2204460492503131e-16;
+	static final double GSL_DBL_EPSILON = 2.2204460492503131e-16;
 	/**
 	 * Halley iteration used in Lambert-W approximation
 	 * @param x         Point at which Halley iteration will be calculated
@@ -998,7 +998,7 @@ public final class SpecialFunctions {
 	 * @param maxIter   Maximum number of iteration
 	 * @return          Halley iteration value if succesfull, otherwise Double.NaN
 	 */
-	private static final double halleyIteration(double x, double wInitial, int maxIter) {
+	static final double halleyIteration(double x, double wInitial, int maxIter) {
 		double w = wInitial;
 		double tol = 1;
 		double t = 0, p, e;
@@ -1022,7 +1022,7 @@ public final class SpecialFunctions {
 	 * @param r
 	 * @return Ner zero approximation
 	 */
-	private static final double seriesEval(double r) {
+	static final double seriesEval(double r) {
 		double t8 = Coefficients.lambertWqNearZero[8] + r * (Coefficients.lambertWqNearZero[9] + r * (Coefficients.lambertWqNearZero[10] + r * Coefficients.lambertWqNearZero[11]));
 		double t5 = Coefficients.lambertWqNearZero[5] + r * (Coefficients.lambertWqNearZero[6] + r * (Coefficients.lambertWqNearZero[7] + r * t8));
 		double t1 = Coefficients.lambertWqNearZero[1] + r * (Coefficients.lambertWqNearZero[2] + r * (Coefficients.lambertWqNearZero[3] + r * (Coefficients.lambertWqNearZero[4] + r * t5)));
@@ -1033,7 +1033,7 @@ public final class SpecialFunctions {
 	 * @param x
 	 * @return Approximation of principal branch of Lambert-W function
 	 */
-	private static final double lambertW0(double x) {
+	static final double lambertW0(double x) {
 		if (Math.abs(x) <= BinaryRelations.DEFAULT_COMPARISON_EPSILON) return 0;
 		if (Math.abs(x + MathConstants.EXP_MINUS_1) <= BinaryRelations.DEFAULT_COMPARISON_EPSILON) return -1;
 		if (Math.abs(x - 1) <= BinaryRelations.DEFAULT_COMPARISON_EPSILON) return MathConstants.OMEGA;
@@ -1061,7 +1061,7 @@ public final class SpecialFunctions {
 	 * @param x
 	 * @return Approxmiation of minus 1 branch of Lambert-W function
 	 */
-	private static final double lambertW1(double x) {
+	static final double lambertW1(double x) {
 		if (x >= -BinaryRelations.DEFAULT_COMPARISON_EPSILON) return Double.NaN;
 		if (x < -MathConstants.EXP_MINUS_1) return Double.NaN;
 		if (Math.abs(x + MathConstants.EXP_MINUS_1) <= BinaryRelations.DEFAULT_COMPARISON_EPSILON) return -1;

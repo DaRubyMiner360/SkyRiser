@@ -20,13 +20,26 @@ package ml.darubyminer360.skyriser.api;
 
 import ml.darubyminer360.skyriser.files.Palette;
 import ml.darubyminer360.skyriser.files.Style;
+import ml.darubyminer360.skyriser.utils.Function6;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
 
 public class SkyRiserAPI {
-    public static List<BiFunction<CommandSender, List<Object>, Boolean>> customActions = new ArrayList<>();
+    static final List<Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean>> customActions = new ArrayList<>();
+
+
+    public static boolean addAction(Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean> action) {
+        return customActions.add(action);
+    }
+
+    public static boolean removeAction(Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean> action) {
+        return customActions.remove(action);
+    }
+
+    public static List<Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean>> getActions() {
+        return customActions;
+    }
 }

@@ -137,7 +137,7 @@ public class PrimesCache {
 	/**
 	 * Eratosthenes Sieve implementation
 	 */
-	private void EratosthenesSieve() {
+	void EratosthenesSieve() {
 		long startTime = System.currentTimeMillis();
 		try {
 			int size = maxNumInCache+1;
@@ -182,7 +182,7 @@ public class PrimesCache {
 	/**
 	 * Counting found primes
 	 */
-	private void countPrimes() {
+	void countPrimes() {
 		for (int i = 0; i <= maxNumInCache; i++) {
 			if (isPrime[i] == true) numberOfPrimes++;
 			if (mXparser.isCurrentCalculationCancelled()) return;

@@ -18,20 +18,20 @@
 
 package ml.darubyminer360.skyriser.files;
 
-import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Palette {
-    public List<String> materialStrings = new ArrayList<>();
-    public List<Material> materials = new ArrayList<>();
+    public List<String> blockDataStrings = new ArrayList<>();
+    public List<BlockData> blockDatas = new ArrayList<>();
 
     @Override
     public boolean equals(Object obj) {
         try {
             Palette other  = (Palette) obj;
-            return materials.equals(other.materials) && materialStrings.equals(other.materialStrings);
+            return blockDatas.equals(other.blockDatas) && blockDataStrings.equals(other.blockDataStrings);
         } catch (Exception e) {
             return false;
         }

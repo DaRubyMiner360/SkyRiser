@@ -727,7 +727,7 @@ public final class MathFunctions {
 	 *
 	 * @return     continued polynomial value
 	 */
-	private static final double continuedPolynomial(int n, double[] x) {
+	static final double continuedPolynomial(int n, double[] x) {
 		if (x == null) return Double.NaN;
 		if (x.length == 0) return Double.NaN;
 		if (n == 0)
@@ -900,7 +900,7 @@ public final class MathFunctions {
 	 * @param n   The integer exponent
 	 * @return    Return a to the power of n, if canonical rounding is enable, the it operates on big numbers
 	 */
-	private static final double powInt(double a, int n) {
+	static final double powInt(double a, int n) {
 		if (Double.isNaN(a)) return Double.NaN;
 		if (Double.isInfinite(a)) Math.pow(a, n);
 		if (a == 0) return Math.pow(a, n);
@@ -1181,7 +1181,7 @@ public final class MathFunctions {
 	 * @param val   Parameter
 	 * @return      f double is almost integer returns the closest integer, otherwise original value
 	 */
-	private static final double intIfAlmostIntOtherwiseOrig(double val) {
+	static final double intIfAlmostIntOtherwiseOrig(double val) {
 		double valint = Math.round(val);
 		if ( Math.abs(val-valint) <= BinaryRelations.DEFAULT_COMPARISON_EPSILON ) return valint;
 		return val;

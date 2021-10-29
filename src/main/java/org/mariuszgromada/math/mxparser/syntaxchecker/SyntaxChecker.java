@@ -842,14 +842,14 @@ public final class SyntaxChecker implements SyntaxCheckerConstants {
   public Token token;
   /** Next token. */
   public Token jj_nt;
-  private int jj_ntk;
-  private int jj_gen;
-  final private int[] jj_la1 = new int[21];
-  static private int[] jj_la1_0;
-  static private int[] jj_la1_1;
-  static private int[] jj_la1_2;
-  static private int[] jj_la1_3;
-  static private int[] jj_la1_4;
+  int jj_ntk;
+  int jj_gen;
+  final int[] jj_la1 = new int[21];
+  static int[] jj_la1_0;
+  static int[] jj_la1_1;
+  static int[] jj_la1_2;
+  static int[] jj_la1_3;
+  static int[] jj_la1_4;
   static {
       jj_la1_init_0();
       jj_la1_init_1();
@@ -857,19 +857,19 @@ public final class SyntaxChecker implements SyntaxCheckerConstants {
       jj_la1_init_3();
       jj_la1_init_4();
    }
-   private static void jj_la1_init_0() {
+   static void jj_la1_init_0() {
       jj_la1_0 = new int[] {0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
-   private static void jj_la1_init_1() {
+   static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x10034000,0xe87f0000,0xe87f0000,0x1800000,0x1800000,0x0,0x0,0x30000,0x30000,0x0,0x10000000,0x4000,0x10004000,0x6000000,0x6000000,0x10034000,0x425fc000,0x425fc000,0x0,0x0,0x10000000,};
    }
-   private static void jj_la1_init_2() {
+   static void jj_la1_init_2() {
       jj_la1_2 = new int[] {0xfffc0030,0x7fcf,0x7fcf,0x0,0x0,0x30,0x30,0x0,0x0,0xfffc0000,0x0,0x0,0xfffc0000,0x0,0x0,0xfffc0030,0x4001d,0x4001d,0x8000,0x8000,0x0,};
    }
-   private static void jj_la1_init_3() {
+   static void jj_la1_init_3() {
       jj_la1_3 = new int[] {0x3fffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7ffffff,0x38000000,0x0,0x3fffffff,0x0,0x0,0x3fffffff,0x0,0x0,0x8000000,0x8000000,0x28000000,};
    }
-   private static void jj_la1_init_4() {
+   static void jj_la1_init_4() {
       jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
@@ -939,7 +939,7 @@ public final class SyntaxChecker implements SyntaxCheckerConstants {
     for (int i = 0; i < 21; i++) jj_la1[i] = -1;
   }
 
-  private Token jj_consume_token(int kind) throws ParseException {
+  Token jj_consume_token(int kind) throws ParseException {
     Token oldToken;
     if ((oldToken = token).next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -973,16 +973,16 @@ public final class SyntaxChecker implements SyntaxCheckerConstants {
     return t;
   }
 
-  private int jj_ntk_f() {
+  int jj_ntk_f() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
     else
       return (jj_ntk = jj_nt.kind);
   }
 
-  private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
-  private int[] jj_expentry;
-  private int jj_kind = -1;
+  java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
+  int[] jj_expentry;
+  int jj_kind = -1;
 
   /** Generate ParseException. */
   public ParseException generateParseException() {

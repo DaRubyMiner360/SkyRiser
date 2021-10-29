@@ -510,7 +510,7 @@ public class SpecialValueTrigonometric {
 	 * @return               Returns special value object if special value was found,
 	 * other wise returns null.
 	 */
-	private static final SpecialValue getSpecialValue(double x, List<SpecialValue> valuesList) {
+	static final SpecialValue getSpecialValue(double x, List<SpecialValue> valuesList) {
 		if (Double.isNaN(x)) return null;
 		if (Double.isInfinite(x)) return null;
 		for (SpecialValue sv : valuesList) {

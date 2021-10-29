@@ -91,8 +91,8 @@ import org.mariuszgromada.math.mxparser.mathcollection.MathConstants;
  * @see Expression
  */
 public class RegTestSyntax {
-	private static Expression[] exp;
-	private static boolean runTest(int testId) {
+	static Expression[] exp;
+	static boolean runTest(int testId) {
 		mXparser.consolePrint("[" + testId + "] ");
 		boolean testResult = false;
 		boolean syn;
@@ -3085,7 +3085,7 @@ class FunExtVar implements FunctionExtensionVariadic {
  * @see ArgumentExtension
  */
 class PiMultArgExt implements ArgumentExtension {
-	private int multiple = 0;
+	int multiple = 0;
 	public double getArgumentValue() {
 		multiple++;
 		return  MathConstants.PI * multiple;

@@ -89,7 +89,7 @@ public class PerformanceTests {
 	/**
 	 * Performance test definition & result
 	 */
-	private static PerformanceTestResult[] tests;
+	static PerformanceTestResult[] tests;
 	/**
 	 * Creates threads, executes them, then wait till
 	 * each thread is finished

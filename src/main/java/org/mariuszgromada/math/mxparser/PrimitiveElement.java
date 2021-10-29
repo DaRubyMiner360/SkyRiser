@@ -94,7 +94,7 @@ public class PrimitiveElement {
 	 * @see     Constant#TYPE_ID
 	 * @see     Function#TYPE_ID
 	 */
-	private int myTypeId;
+	int myTypeId;
 	/**
 	 * Default constructor setting element type id
 	 *

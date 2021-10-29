@@ -145,7 +145,7 @@ public class Function extends PrimitiveElement {
 	 * @see Function#BODY_EXTENDED
 	 * @see Function#getFunctionBodyType()
 	 */
-	private int functionBodyType;
+	int functionBodyType;
 	/**
 	 * function expression
 	 */
@@ -153,11 +153,11 @@ public class Function extends PrimitiveElement {
 	/**
 	 * function name
 	 */
-	private String functionName;
+	String functionName;
 	/**
 	 * function description
 	 */
-	private String description;
+	String description;
 	/**
 	 * Indicates whether UDF is variadic
 	 */
@@ -165,7 +165,7 @@ public class Function extends PrimitiveElement {
 	/**
 	 * The number of function parameters
 	 */
-	private int parametersNumber;
+	int parametersNumber;
 	/**
 	 * Function extension (body based in code)
 	 *
@@ -173,7 +173,7 @@ public class Function extends PrimitiveElement {
 	 * @see FunctionExtensionVariadic
 	 * @see Function#Function(String, FunctionExtension)
 	 */
-	private FunctionExtension functionExtension;
+	FunctionExtension functionExtension;
 	/**
 	 * Function extension variadic (body based in code)
 	 *
@@ -181,7 +181,7 @@ public class Function extends PrimitiveElement {
 	 * @see FunctionExtensionVariadic
 	 * @see Function#Function(String, FunctionExtension)
 	 */
-	private FunctionExtensionVariadic functionExtensionVariadic;
+	FunctionExtensionVariadic functionExtensionVariadic;
 	/*=================================================
 	 *
 	 * Constructors
@@ -363,7 +363,7 @@ public class Function extends PrimitiveElement {
 	 * @param      function            the function, which is going
 	 *                                 to be cloned.
 	 */
-	private Function(Function function) {
+	Function(Function function) {
 		super(Function.TYPE_ID);
 		functionName = function.functionName;
 		description = function.description;
@@ -651,7 +651,7 @@ public class Function extends PrimitiveElement {
 	 *
 	 *=================================================
 	 */
-	private int countRecursiveArguments() {
+	int countRecursiveArguments() {
 		int numOfRecursiveArguments = 0;
 		if (functionBodyType == Function.BODY_RUNTIME)
 			for (Argument argument : functionExpression.argumentsList)

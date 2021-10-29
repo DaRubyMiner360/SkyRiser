@@ -20,19 +20,21 @@
 package ml.darubyminer360.skyriser.files;
 
 import ml.darubyminer360.skyriser.SkyRiser;
+import ml.darubyminer360.skyriser.utils.BlockUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PaletteManager {
     File path = new File(SkyRiser.instance.getDataFolder() + "/palettes");
     HashMap<String, Palette> palettesArray = new HashMap<>();
 
-    public String delimiter = ",";
+    public char delimiter = ',';
 
     public PaletteManager() {
         onEnable();
@@ -66,12 +68,12 @@ public class PaletteManager {
                     Palette palette = new Palette();
 
                     String row;
-                    String[] cells;
+                    List<String> cells;
                     while ((row = br.readLine()) != null) {
-                        cells = row.split(delimiter);
+                        cells = BlockUtils.split(row, delimiter);
                         for (String cell : cells) {
-                            palette.materials.add(Material.matchMaterial(cell));
-                            palette.materialStrings.add(cell);
+                            palette.blockDatas.add(Bukkit.createBlockData(cell));
+                            palette.blockDataStrings.add(cell);
                         }
                     }
                     br.close();

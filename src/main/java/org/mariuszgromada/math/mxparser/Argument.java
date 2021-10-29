@@ -169,18 +169,18 @@ public class Argument extends PrimitiveElement {
 	 * @see Argument#BODY_EXTENDED
 	 * @see Argument#getArgumentBodyType()
 	 */
-	private int argumentBodyType;
+	int argumentBodyType;
 	/**
 	 * Argument extension (body based in code)
 	 *
 	 * @see ArgumentExtension
 	 * @see Argument#Argument(String, ArgumentExtension)
 	 */
-	private ArgumentExtension argumentExtension;
+	ArgumentExtension argumentExtension;
 	/**
 	 * Description of the argument.
 	 */
-	private String description;
+	String description;
 	/**
 	 * Argument expression for dependent and recursive
 	 * arguments.
@@ -189,7 +189,7 @@ public class Argument extends PrimitiveElement {
 	/**
 	 * Argument name (x, y, arg1, my_argument, etc...)
 	 */
-	private String argumentName;
+	String argumentName;
 	/**
 	 * Argument type (free, dependent)
 	 */

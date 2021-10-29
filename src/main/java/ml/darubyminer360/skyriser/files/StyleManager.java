@@ -41,6 +41,7 @@ public class StyleManager {
             if (path.mkdirs() || Config.get().getBoolean("AlwaysAddExampleStyles")) {
                 SkyRiser.instance.saveResource("styles/example.style", false);
                 SkyRiser.instance.saveResource("styles/hologramexample.style", false);
+                SkyRiser.instance.saveResource("styles/segmentexample.style", false);
             }
         } catch (Exception e) {
             e.printStackTrace();

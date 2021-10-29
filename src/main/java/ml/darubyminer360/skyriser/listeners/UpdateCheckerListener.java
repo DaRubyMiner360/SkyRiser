@@ -18,20 +18,21 @@
 
 package ml.darubyminer360.skyriser.listeners;
 
+import ml.darubyminer360.skyriser.SkyRiser;
 import ml.darubyminer360.skyriser.files.Config;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class PlayerJoinListener implements Listener {
+public class UpdateCheckerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        /*if (Config.get().getBoolean("SendAvailableUpdateMessage")) {
-            SkyRiser.updateChecker.getVersion(version -> {
-                if (!SkyRiser.instance.getDescription().getVersion().equalsIgnoreCase(version)) {
-                    event.getPlayer().sendMessage("There is a new update available for SkyRiser! Download it at: https://api.spigotmc.org/legacy/update.php?resource=" + SkyRiser.updateChecker.resourceId);
-                }
-            });
-        }*/
+//        if (Config.get().getBoolean("SendAvailableUpdateMessage")) {
+//            SkyRiser.updateChecker.getVersion(version -> {
+//                if (!SkyRiser.instance.getDescription().getVersion().equalsIgnoreCase(version)) {
+//                    event.getPlayer().sendMessage("There is a new update available for SkyRiser! Download it at: https://api.spigotmc.org/legacy/update.php?resource=" + SkyRiser.updateChecker.resourceId);
+//                }
+//            });
+//        }
     }
 }

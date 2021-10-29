@@ -94,7 +94,7 @@ public final class NumberTheory {
 	 * Initial search size 1 ... n for the toFraction method
 	 * @see NumberTheory#toFraction(double)
 	 */
-	private static long TO_FRACTION_INIT_SEARCH_SIZE = DEFAULT_TO_FRACTION_INIT_SEARCH_SIZE;
+	static long TO_FRACTION_INIT_SEARCH_SIZE = DEFAULT_TO_FRACTION_INIT_SEARCH_SIZE;
 	/**
 	 * Sets initial search size for the toFraction method
 	 *
@@ -241,7 +241,7 @@ public final class NumberTheory {
 	 * @param rightIndex    Starting right index.
 	 * @return              Initial ordering swapped according to sorting order.
 	 */
-	private static final void sortAsc(double[] array, int[] initOrder, int leftIndex, int rightIndex) {
+	static final void sortAsc(double[] array, int[] initOrder, int leftIndex, int rightIndex) {
 		int i = leftIndex;
 		int j = rightIndex;
 		double x = array[(leftIndex+rightIndex)/2];
@@ -1085,7 +1085,7 @@ public final class NumberTheory {
      * @return        Regular expression string if base between 1 and 36,
      *                otherwise empty string "" is returned.
      */
-	private static final String getRegExpForNumeralSystem(int numeralSystemBase) {
+	static final String getRegExpForNumeralSystem(int numeralSystemBase) {
 		switch (numeralSystemBase) {
 			case 1: return ParserSymbol.BASE1_REG_EXP;
 			case 2: return ParserSymbol.BASE2_REG_EXP;
@@ -2200,7 +2200,7 @@ public final class NumberTheory {
 	 * @return Returns array containing sign, numerator and denominator.
 	 * Sign at index 0, numerator at index 1, denominator at index 2.
 	 */
-	private static final double[] fractionToDoubleArray(double sign, double numerator, double denominator) {
+	static final double[] fractionToDoubleArray(double sign, double numerator, double denominator) {
 		double[] fraction = new double[3];
 		fraction[0] = sign;
 		fraction[1] = numerator;
@@ -2218,7 +2218,7 @@ public final class NumberTheory {
 	 * @return Returns array containing whole number, numerator and denominator.
 	 * Sign at index 0, whole number at index 1, numerator at index 2, denominator at index 3.
 	 */
-	private static final double[] mixedFractionToDoubleArray(double sign, double whole, double numerator, double denominator) {
+	static final double[] mixedFractionToDoubleArray(double sign, double whole, double numerator, double denominator) {
 		double[] mixedFraction = new double[4];
 		mixedFraction[0] = sign;
 		mixedFraction[1] = whole;

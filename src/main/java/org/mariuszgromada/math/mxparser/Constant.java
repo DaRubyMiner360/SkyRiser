@@ -113,23 +113,23 @@ public class Constant extends PrimitiveElement {
 	 */
 	public static final boolean NO_SYNTAX_ERRORS = Expression.NO_SYNTAX_ERRORS;
 	public static final boolean SYNTAX_ERROR_OR_STATUS_UNKNOWN = Expression.SYNTAX_ERROR_OR_STATUS_UNKNOWN;
-	private static final String NO_SYNTAX_ERROR_MSG = "Constant - no syntax errors.";
+	static final String NO_SYNTAX_ERROR_MSG = "Constant - no syntax errors.";
 	/**
 	 * Name of the constant
 	 */
-	private String constantName;
+	String constantName;
 	/**
 	 * COnstant value
 	 */
-	private double constantValue;
+	double constantValue;
 	/**
 	 * Constant description
 	 */
-	private String description;
+	String description;
 	/**
 	 * Dependent expression list
 	 */
-	private List<Expression> relatedExpressionsList;
+	List<Expression> relatedExpressionsList;
 	/**
 	 * Status of the expression syntax
 	 *
@@ -137,11 +137,11 @@ public class Constant extends PrimitiveElement {
 	 *    - NO_SYNTAX_ERRORS
 	 *    - SYNTAX_ERROR_OR_STATUS_UNKNOWN
 	 */
-	private boolean syntaxStatus;
+	boolean syntaxStatus;
 	/**
 	 * Message after checking the syntax
 	 */
-	private String errorMessage;
+	String errorMessage;
 	/**
 	 * Constructor - creates constant with a given name and given value
 	 *

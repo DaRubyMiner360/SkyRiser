@@ -9,7 +9,7 @@ package org.mariuszgromada.math.mxparser.syntaxchecker;
   public  java.io.PrintStream debugStream = System.out;
   /** Set debug output. */
   public  void setDebugStream(java.io.PrintStream ds) { debugStream = ds; }
-private final int jjStopStringLiteralDfa_0(int pos, long active0, long active1){
+final int jjStopStringLiteralDfa_0(int pos, long active0, long active1){
    switch (pos)
    {
       case 0:
@@ -45,16 +45,16 @@ private final int jjStopStringLiteralDfa_0(int pos, long active0, long active1){
          return -1;
    }
 }
-private final int jjStartNfa_0(int pos, long active0, long active1){
+final int jjStartNfa_0(int pos, long active0, long active1){
    return jjMoveNfa_0(jjStopStringLiteralDfa_0(pos, active0, active1), pos + 1);
 }
-private int jjStopAtPos(int pos, int kind)
+int jjStopAtPos(int pos, int kind)
 {
    jjmatchedKind = kind;
    jjmatchedPos = pos;
    return pos + 1;
 }
-private int jjMoveStringLiteralDfa0_0(){
+int jjMoveStringLiteralDfa0_0(){
    switch(curChar)
    {
       case 33:
@@ -102,7 +102,7 @@ private int jjMoveStringLiteralDfa0_0(){
          return jjMoveNfa_0(0, 0);
    }
 }
-private int jjMoveStringLiteralDfa1_0(long active0, long active1){
+int jjMoveStringLiteralDfa1_0(long active0, long active1){
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
       jjStopStringLiteralDfa_0(0, active0, active1);
@@ -135,7 +135,7 @@ private int jjMoveStringLiteralDfa1_0(long active0, long active1){
    }
    return jjStartNfa_0(0, active0, active1);
 }
-private int jjMoveStringLiteralDfa2_0(long old0, long active0, long old1, long active1){
+int jjMoveStringLiteralDfa2_0(long old0, long active0, long old1, long active1){
    if (((active0 &= old0) | (active1 &= old1)) == 0L)
       return jjStartNfa_0(0, old0, old1);
    try { curChar = input_stream.readChar(); }
@@ -168,7 +168,7 @@ private int jjMoveStringLiteralDfa2_0(long old0, long active0, long old1, long a
    }
    return jjStartNfa_0(1, 0L, active1);
 }
-private int jjStartNfaWithStates_0(int pos, int kind, int state)
+int jjStartNfaWithStates_0(int pos, int kind, int state)
 {
    jjmatchedKind = kind;
    jjmatchedPos = pos;
@@ -176,7 +176,7 @@ private int jjStartNfaWithStates_0(int pos, int kind, int state)
    catch(java.io.IOException e) { return pos + 1; }
    return jjMoveNfa_0(state, pos + 1);
 }
-private int jjMoveNfa_0(int startState, int curPos)
+int jjMoveNfa_0(int startState, int curPos)
 {
    int startsAt = 0;
    jjnewStateCnt = 248;
@@ -1753,7 +1753,7 @@ public Token getNextToken()
   }
 }
 
-private void jjCheckNAdd(int state)
+void jjCheckNAdd(int state)
 {
    if (jjrounds[state] != jjround)
    {
@@ -1761,19 +1761,19 @@ private void jjCheckNAdd(int state)
       jjrounds[state] = jjround;
    }
 }
-private void jjAddStates(int start, int end)
+void jjAddStates(int start, int end)
 {
    do {
       jjstateSet[jjnewStateCnt++] = jjnextStates[start];
    } while (start++ != end);
 }
-private void jjCheckNAddTwoStates(int state1, int state2)
+void jjCheckNAddTwoStates(int state1, int state2)
 {
    jjCheckNAdd(state1);
    jjCheckNAdd(state2);
 }
 
-private void jjCheckNAddStates(int start, int end)
+void jjCheckNAddStates(int start, int end)
 {
    do {
       jjCheckNAdd(jjnextStates[start]);
@@ -1804,7 +1804,7 @@ private void jjCheckNAddStates(int start, int end)
     ReInitRounds();
   }
 
-  private void ReInitRounds()
+  void ReInitRounds()
   {
     int i;
     jjround = 0x80000001;
@@ -1840,8 +1840,8 @@ static final long[] jjtoSkip = {
 };
     protected SimpleCharStream  input_stream;
 
-    private final int[] jjrounds = new int[248];
-    private final int[] jjstateSet = new int[2 * 248];
+    final int[] jjrounds = new int[248];
+    final int[] jjstateSet = new int[2 * 248];
 
     
     protected char curChar;

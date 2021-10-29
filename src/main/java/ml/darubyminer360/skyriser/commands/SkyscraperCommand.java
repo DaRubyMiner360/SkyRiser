@@ -21,11 +21,9 @@ package ml.darubyminer360.skyriser.commands;
 import ml.darubyminer360.skyriser.SkyRiser;
 import ml.darubyminer360.skyriser.api.PreSkyscraperBuildEvent;
 import ml.darubyminer360.skyriser.api.SkyRiserAPI;
-import ml.darubyminer360.skyriser.files.Config;
 import ml.darubyminer360.skyriser.files.Palette;
 import ml.darubyminer360.skyriser.files.Style;
-import ml.darubyminer360.skyriser.utils.CommandUtils;
-import ml.darubyminer360.skyriser.utils.WorldEditUtils;
+import ml.darubyminer360.skyriser.utils.*;
 import org.bukkit.*;
 import org.bukkit.command.*;
 import org.bukkit.entity.EntityType;
@@ -37,48 +35,109 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SkyscraperCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender instanceof ConsoleCommandSender) {
-            ((ConsoleCommandSender) sender).sendMessage(SkyRiser.prefix + ChatColor.RED + "You cannot use this command with the console!");
+        if (sender instanceof Player && !sender.hasPermission("skyriser.skyscraper")) {
+            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You do not have permission to use this command!");
             return true;
-        }
-
-        if (args.length == 1 && args[0].equalsIgnoreCase("usage")) {
-            return false;
         }
 
         if (args.length == 0) {
-            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Missing argument: action!" + ChatColor.RESET);
+            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Missing argument: action!");
             return true;
         }
-        else if (args[0].equalsIgnoreCase("build") && args.length == 1) {
-            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Missing argument: style!" + ChatColor.RESET);
+
+        if (args[0].equalsIgnoreCase("usage")) {
+            return false;
+        }
+        else if (args[0].equalsIgnoreCase("stop")) {
+            Player target;
+            if (args.length > 1)
+                target = Bukkit.getPlayer(args[1]);
+            else if (sender instanceof Player)
+                target = (Player) sender;
+            else {
+                sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You can't do this from the console or a command block!");
+                return true;
+            }
+
+            if (SkyRiser.instance.removePlayerBuilder(target.getName())) {
+                String message = SkyRiser.prefix + ChatColor.GREEN + "Stopped building";
+                if (target != sender)
+                    message += " for " + target.getDisplayName();
+                message += ".";
+                sender.sendMessage(message);
+            }
+            else {
+                String message = SkyRiser.prefix + ChatColor.RED + " ";
+                if (target == sender)
+                    message += "You aren't";
+                else
+                    message += target.getDisplayName() + " isn't";
+                message += " currently building.";
+                sender.sendMessage(message);
+            }
             return true;
         }
-        else if (args[0].equalsIgnoreCase("build") && args.length == 2) {
-            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Missing argument: palette!" + ChatColor.RESET);
+        else if (args[0].equalsIgnoreCase("undo")) {
+            int amount = 1;
+            Player target;
+            if (args.length > 1)
+                amount = Integer.parseInt(args[1]);
+            if (args.length > 2)
+                target = Bukkit.getPlayer(args[2]);
+            else if (sender instanceof Player)
+                target = (Player) sender;
+            else {
+                sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You can't do this from the console or a command block!");
+                return true;
+            }
+
+            for (int i = 0; i < amount; i++) {
+                if (!SkyRiser.instance.undo(sender.getName())) {
+                    sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Can't undo.");
+                    String message = SkyRiser.prefix + ChatColor.GREEN + "Undid " + i + "action";
+                    if (i != 1)
+                        message += "s";
+                    if (target != sender)
+                        message += " for " + target.getDisplayName();
+                    message += ".";
+                    sender.sendMessage(message);
+                    return true;
+                }
+            }
+            String message = SkyRiser.prefix + ChatColor.GREEN + "Undid " + amount + "action";
+            if (amount != 1)
+                message += "s";
+            if (target != sender)
+                message += " for " + target.getDisplayName();
+            message += ".";
+            sender.sendMessage(message);
             return true;
         }
-        else if (args[0].equalsIgnoreCase("build") && args.length == 3) {
-            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Missing argument: palette sample skip amount!" + ChatColor.RESET);
+
+        if (sender instanceof ConsoleCommandSender) {
+            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You can't do this from the console!");
             return true;
         }
-        else if (args[0].equalsIgnoreCase("build") && args.length == 4) {
-            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Missing argument: palette blacklist!" + ChatColor.RESET);
+
+        if (args.length == 1) {
+            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Missing argument: style!");
+            return true;
+        }
+        else if (args.length == 2) {
+            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Missing argument: palette!");
             return true;
         }
         
         if (args[0].equalsIgnoreCase("build")) {
-            PreSkyscraperBuildEvent buildEvent = new PreSkyscraperBuildEvent(sender);
-            Bukkit.getPluginManager().callEvent(buildEvent);
-            if (!buildEvent.isCancelled()) {
+            PreSkyscraperBuildEvent preBuildEvent = new PreSkyscraperBuildEvent(sender);
+            Bukkit.getPluginManager().callEvent(preBuildEvent);
+            if (!preBuildEvent.isCancelled()) {
                 SkyRiser.styleManager.loadStyles();
                 SkyRiser.paletteManager.loadPalettes();
 
@@ -95,10 +154,12 @@ public class SkyscraperCommand implements CommandExecutor {
                     if (varsRegexMatcher.group(1) != null) {
                         // Add double-quoted string without the quotes
                         vars.add(varsRegexMatcher.group(1));
-                    } else if (varsRegexMatcher.group(2) != null) {
+                    }
+                    else if (varsRegexMatcher.group(2) != null) {
                         // Add single-quoted string without the quotes
                         vars.add(varsRegexMatcher.group(2));
-                    } else {
+                    }
+                    else {
                         // Add unquoted word
                         vars.add(varsRegexMatcher.group());
                     }
@@ -135,32 +196,33 @@ public class SkyscraperCommand implements CommandExecutor {
                     return true;
                 }
 
-                int paletteSampleSkipAmount = Integer.parseInt(args[3]);
+                if (args.length > 3) {
+                    int paletteSampleSkipAmount = Integer.parseInt(args[3]);
 
-                // Remove the first {paletteSampleSkipAmount} blocks from the palette
-                Palette unchangedPalette = palette;
-                for (int i = 0; i < unchangedPalette.materials.size(); i++) {
-                    if (i < paletteSampleSkipAmount) {
-                        palette.materials.remove(0);
-                        palette.materialStrings.remove(0);
+                    // Remove the first {paletteSampleSkipAmount} blocks from the palette
+                    Palette unchangedPalette = palette;
+                    for (int i = 0; i < unchangedPalette.blockDatas.size(); i++) {
+                        if (i < paletteSampleSkipAmount) {
+                            palette.blockDatas.remove(0);
+                            palette.blockDataStrings.remove(0);
+                        }
                     }
-                }
 
-                Palette blacklist = null;
-                for (Map.Entry<String, Palette> p : SkyRiser.paletteManager.getPalettes().entrySet()) {
-                    if ((p.getKey().equalsIgnoreCase(args[4]) || p.getKey().equalsIgnoreCase(args[4] + ".palette") || p.getKey().equalsIgnoreCase(args[4] + ".csv")) && p.getValue() != unchangedPalette) {
-                        blacklist = p.getValue();
+
+                    if (args.length > 4) {
+                        Palette blacklist = null;
+                        for (Map.Entry<String, Palette> p : SkyRiser.paletteManager.getPalettes().entrySet()) {
+                            if ((p.getKey().equalsIgnoreCase(args[4]) || p.getKey().equalsIgnoreCase(args[4] + ".palette") || p.getKey().equalsIgnoreCase(args[4] + ".csv")) && p.getValue() != unchangedPalette) {
+                                blacklist = p.getValue();
+                            }
+                        }
+
+                        // Remove overlaps with the blacklist from the palette
+                        if (blacklist != null) {
+                            palette.blockDatas.removeAll(blacklist.blockDatas);
+                            palette.blockDataStrings.removeAll(blacklist.blockDataStrings);
+                        }
                     }
-                }
-
-                // Remove overlaps with the blacklist from the palette
-                if (blacklist != null) {
-                    palette.materials.removeAll(blacklist.materials);
-                    palette.materialStrings.removeAll(blacklist.materialStrings);
-                }
-                else {
-                    sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Missing argument: palette blacklist!" + ChatColor.RESET);
-                    return true;
                 }
 
                 // Check if there are enough blocks left in the palette
@@ -179,14 +241,13 @@ public class SkyscraperCommand implements CommandExecutor {
                         }
                     }
                 }
-                if (palette.materials.size() < highestIndex + 1) {
+                if (palette.blockDatas.size() < highestIndex + 1) {
                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Not enough blocks left in palette!");
                     return true;
                 }
 
-                if (sender instanceof Player && SkyRiser.useWorldEdit) {
-                    WorldEditUtils.editSession = com.sk89q.worldedit.WorldEdit.getInstance().getEditSessionFactory().getEditSession(com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(CommandUtils.getWorld(sender)), -1);
-                }
+                boolean segmentBuild = false;
+                Builder builder = new Builder(sender, style.rotate);
                 for (Style.Action action : style.actions) {
                     List<String> s = Arrays.asList(action.action.replaceAll("^.*?\\{", "").split("}.*?(\\{|$)"));
                     for (String str : s) {
@@ -194,7 +255,7 @@ public class SkyscraperCommand implements CommandExecutor {
                             String replacement = "";
                             List<String> mats = Arrays.asList(str.replaceAll("^.*?palette\\[", "").split("].*?(palette\\[|$)"));
                             for (String mat : mats) {
-                                replacement = palette.materialStrings.get(Integer.parseInt(mat));
+                                replacement = palette.blockDataStrings.get(Integer.parseInt(mat));
                             }
                             action.action = action.action.replaceFirst(Pattern.quote("{" + str + "}"), Matcher.quoteReplacement(replacement));
                         }
@@ -262,68 +323,49 @@ public class SkyscraperCommand implements CommandExecutor {
                         if (regexMatcher.group(1) != null) {
                             // Add double-quoted string without the quotes
                             splitStr.add(regexMatcher.group(1));
-                        } else if (regexMatcher.group(2) != null) {
+                        }
+                        else if (regexMatcher.group(2) != null) {
                             // Add single-quoted string without the quotes
                             splitStr.add(regexMatcher.group(2));
-                        } else {
+                        }
+                        else {
                             // Add unquoted word
                             splitStr.add(regexMatcher.group());
                         }
                     }
 
                     // Do the actions in the style
-                    if (style.format.equalsIgnoreCase("old") && !Config.get().getBoolean("AllowOldStyleFormat")) {
-                        sender.sendMessage(SkyRiser.prefix + ChatColor.YELLOW + "Warning: Style uses old format but it isn't allowed in the config! Attempting to use new format. This probably won't work!");
-                    }
-                    if (!style.format.equalsIgnoreCase("old") && !style.format.equalsIgnoreCase("new")) {
-                        sender.sendMessage(SkyRiser.prefix + ChatColor.YELLOW + "Warning: Invalid format! Defaulting to new. This may not work!");
-                    }
                     boolean done = false;
-                    for (BiFunction<CommandSender, List<Object>, Boolean> func : SkyRiserAPI.customActions) {
-                        if (func.apply(sender, Arrays.asList(style, action, palette, splitStr))) {
+                    for (Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean> func : SkyRiserAPI.getActions()) {
+                        if (func.apply(sender, style, action, palette, splitStr)) {
                             done = true;
                         }
                     }
-                    if (style.format.equalsIgnoreCase("old") && Config.get().getBoolean("AllowOldStyleFormat") && !done) {
-                        if (action.action_type.equalsIgnoreCase("command")) {
-                            if (sender instanceof Player)
-                                ((Player) sender).performCommand(action.action);
-                        }
-                        else if (action.action_type.equalsIgnoreCase("block")) {
-                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            if (sender instanceof Player) {
-                                if (SkyRiser.useWorldEdit) {
-                                    try {
-                                        WorldEditUtils.editSession.setBlock(com.sk89q.worldedit.bukkit.BukkitAdapter.asBlockVector(loc), com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(Material.matchMaterial(splitStr.get(3)).createBlockData()));
-                                    } catch (Exception ignored) {}
-                                }
-                                else
-                                    loc.getBlock().setType(Material.matchMaterial(splitStr.get(3)));
-                            }
-                            else
-                                loc.getBlock().setType(Material.matchMaterial(splitStr.get(3)));
-                        }
-                    }
-                    else if (!done) {
+                    if (!done) {
+//                        ExecutorService executor = Executors.newFixedThreadPool(10);
+//                        executor.execute(() -> {
+//                        });
                         if (action.action_type.equalsIgnoreCase("cube") || action.action_type.equalsIgnoreCase("fill")) {
                             Location startLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
                             Location endLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)), Integer.parseInt(splitStr.get(5)));
-                            for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
-                                for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+                            for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+                                for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
                                     for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
                                         Location loc = new Location(CommandUtils.getWorld(sender), x, y, z);
-                                        if (sender instanceof Player) {
-                                            if (SkyRiser.useWorldEdit) {
-                                                try {
-                                                    WorldEditUtils.editSession.setBlock(com.sk89q.worldedit.bukkit.BukkitAdapter.asBlockVector(loc), com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(Material.matchMaterial(splitStr.get(6)).createBlockData()));
-                                                } catch (Exception ignored) {}
-                                            }
-                                            else
-                                                loc.getBlock().setType(Material.matchMaterial(splitStr.get(6)));
-                                        }
-                                        else {
-                                            loc.getBlock().setType(Material.matchMaterial(splitStr.get(6)));
-                                        }
+                                        builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
+                                    }
+                                }
+                            }
+                        }
+                        if (action.action_type.equalsIgnoreCase("segmentcube") || action.action_type.equalsIgnoreCase("segcube") || action.action_type.equalsIgnoreCase("scube") || action.action_type.equalsIgnoreCase("segmentfill") || action.action_type.equalsIgnoreCase("segfill") || action.action_type.equalsIgnoreCase("sfill")) {
+                            segmentBuild = true;
+                            Location startLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            Location endLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)), Integer.parseInt(splitStr.get(5)));
+                            for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+                                for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
+                                    for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
+                                        Location loc = new Location(CommandUtils.getWorld(sender), x, y, z);
+                                        builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
                                     }
                                 }
                             }
@@ -336,17 +378,22 @@ public class SkyscraperCommand implements CommandExecutor {
                                     for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
                                         if (x == startLoc.getBlockX() || x == endLoc.getBlockX() || y == startLoc.getBlockY() || y == endLoc.getBlockY() || z == startLoc.getBlockZ() || z == endLoc.getBlockZ()) {
                                             Location loc = new Location(CommandUtils.getWorld(sender), x, y, z);
-                                            if (sender instanceof Player) {
-                                                if (SkyRiser.useWorldEdit) {
-                                                    try {
-                                                        WorldEditUtils.editSession.setBlock(com.sk89q.worldedit.bukkit.BukkitAdapter.asBlockVector(loc), com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(Material.matchMaterial(splitStr.get(6)).createBlockData()));
-                                                    } catch (Exception ignored) {}
-                                                }
-                                                else
-                                                    loc.getBlock().setType(Material.matchMaterial(splitStr.get(6)));
-                                            }
-                                            else
-                                                loc.getBlock().setType(Material.matchMaterial(splitStr.get(6)));
+                                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (action.action_type.equalsIgnoreCase("segmenthollowcube") || action.action_type.equalsIgnoreCase("seghollowcube") || action.action_type.equalsIgnoreCase("shollowcube")) {
+                            segmentBuild = true;
+                            Location startLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            Location endLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)), Integer.parseInt(splitStr.get(5)));
+                            for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
+                                for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+                                    for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
+                                        if (x == startLoc.getBlockX() || x == endLoc.getBlockX() || y == startLoc.getBlockY() || y == endLoc.getBlockY() || z == startLoc.getBlockZ() || z == endLoc.getBlockZ()) {
+                                            Location loc = new Location(CommandUtils.getWorld(sender), x, y, z);
+                                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
                                         }
                                     }
                                 }
@@ -354,17 +401,56 @@ public class SkyscraperCommand implements CommandExecutor {
                         }
                         else if (action.action_type.equalsIgnoreCase("block")) {
                             Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            if (sender instanceof Player) {
-                                if (SkyRiser.useWorldEdit) {
-                                    try {
-                                        WorldEditUtils.editSession.setBlock(com.sk89q.worldedit.bukkit.BukkitAdapter.asBlockVector(loc), com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(Material.matchMaterial(splitStr.get(3)).createBlockData()));
-                                    } catch (Exception ignored) {}
-                                }
-                                else
-                                    loc.getBlock().setType(Material.matchMaterial(splitStr.get(3)));
-                            }
-                            else
-                                loc.getBlock().setType(Material.matchMaterial(splitStr.get(3)));
+                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        }
+                        else if (action.action_type.equalsIgnoreCase("segmentblock") || action.action_type.equalsIgnoreCase("segblock") || action.action_type.equalsIgnoreCase("sblock")) {
+                            segmentBuild = true;
+                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        }
+                        else if (action.action_type.equalsIgnoreCase("circle")) {
+                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            // TODO: Add circles
+//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        }
+                        else if (action.action_type.equalsIgnoreCase("segmentcircle") || action.action_type.equalsIgnoreCase("segcircle") || action.action_type.equalsIgnoreCase("scircle")) {
+                            segmentBuild = true;
+                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            // TODO: Add segment circles
+//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        }
+                        else if (action.action_type.equalsIgnoreCase("hollowcircle")) {
+                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            // TODO: Add hollow circles
+//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        }
+                        else if (action.action_type.equalsIgnoreCase("segmenthollowcircle") || action.action_type.equalsIgnoreCase("seghollowcircle") || action.action_type.equalsIgnoreCase("shollowcircle")) {
+                            segmentBuild = true;
+                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            // TODO: Add segment hollow circles
+//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        }
+                        else if (action.action_type.equalsIgnoreCase("sphere")) {
+                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            // TODO: Add spheres
+//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        }
+                        else if (action.action_type.equalsIgnoreCase("segmentsphere") || action.action_type.equalsIgnoreCase("segsphere") || action.action_type.equalsIgnoreCase("ssphere")) {
+                            segmentBuild = true;
+                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            // TODO: Add segment spheres
+//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        }
+                        else if (action.action_type.equalsIgnoreCase("hollowsphere")) {
+                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            // TODO: Add hollow spheres
+//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        }
+                        else if (action.action_type.equalsIgnoreCase("segmenthollowsphere") || action.action_type.equalsIgnoreCase("seghollowsphere") || action.action_type.equalsIgnoreCase("shollowsphere")) {
+                            segmentBuild = true;
+                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            // TODO: Add segment hollow spheres
+//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
                         }
                         else if (action.action_type.equalsIgnoreCase("summon") || action.action_type.equalsIgnoreCase("summonmob") || action.action_type.equalsIgnoreCase("summonentity") || action.action_type.equalsIgnoreCase("spawnmob") || action.action_type.equalsIgnoreCase("spawnentity")) {
                             World world = CommandUtils.getWorld(sender);
@@ -462,7 +548,8 @@ public class SkyscraperCommand implements CommandExecutor {
                                 for (World world : Bukkit.getWorlds()) {
                                     world.getWorldBorder().setSize(size + world.getWorldBorder().getSize(), time);
                                 }
-                            } else if (splitStr.get(0).equalsIgnoreCase("damage")) {
+                            }
+                            else if (splitStr.get(0).equalsIgnoreCase("damage")) {
                                 if (splitStr.size() < 2) {
                                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border damage because of missing arguments.");
                                     return true;
@@ -490,7 +577,8 @@ public class SkyscraperCommand implements CommandExecutor {
                                     }
                                     sender.sendMessage(SkyRiser.prefix + "Set border's damage buffer to " + buffer + " blocks.");
                                     return true;
-                                } else if (splitStr.get(1).equalsIgnoreCase("amount")) {
+                                }
+                                else if (splitStr.get(1).equalsIgnoreCase("amount")) {
                                     if (splitStr.size() < 3) {
                                         sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border damage because of missing arguments.");
                                         return true;
@@ -512,11 +600,13 @@ public class SkyscraperCommand implements CommandExecutor {
                                         world.getWorldBorder().setDamageAmount(damage);
                                     }
                                     return true;
-                                } else {
+                                }
+                                else {
                                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border damage because of invalid arguments.");
                                     return true;
                                 }
-                            } else if (splitStr.get(0).equalsIgnoreCase("warning")) {
+                            }
+                            else if (splitStr.get(0).equalsIgnoreCase("warning")) {
                                 if (splitStr.size() < 2) {
                                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border warning info because of missing arguments.");
                                     return true;
@@ -543,7 +633,8 @@ public class SkyscraperCommand implements CommandExecutor {
                                         world.getWorldBorder().setWarningTime(time);
                                     }
                                     return true;
-                                } else if (splitStr.get(1).equalsIgnoreCase("distance")) {
+                                }
+                                else if (splitStr.get(1).equalsIgnoreCase("distance")) {
                                     if (splitStr.size() < 3) {
                                         sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border warning distance because of missing arguments.");
                                         return true;
@@ -565,11 +656,13 @@ public class SkyscraperCommand implements CommandExecutor {
                                         world.getWorldBorder().setWarningDistance(blocks);
                                     }
                                     return true;
-                                } else {
+                                }
+                                else {
                                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border warning info because of invalid arguments.");
                                     return true;
                                 }
-                            } else {
+                            }
+                            else {
                                 sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot modify world border because of missing or invalid arguments.");
                                 return true;
                             }
@@ -582,7 +675,7 @@ public class SkyscraperCommand implements CommandExecutor {
                                 // TODO: Set the name
 
                                 String linesStr = splitStr.get(4).substring(1, splitStr.get(4).length() - 1);
-                                List<String> lines = new ArrayList<String>(Arrays.asList(linesStr.replace(", ", ",").split(",")));
+                                List<String> lines = new ArrayList<>(Arrays.asList(linesStr.replace(", ", ",").split(",")));
 
                                 for (String line : lines) {
                                     hologram.appendTextLine(line.substring(1, line.length() - 1));
@@ -594,16 +687,33 @@ public class SkyscraperCommand implements CommandExecutor {
                                 com.gmail.filoghost.holographicdisplays.disk.HologramDatabase.trySaveToDisk();
                             }
                             else {
-                                sender.sendMessage(SkyRiser.prefix + ChatColor.YELLOW + "Warning: This style requires a hologram plugin to fully work! Install Holographic Displays!" + ChatColor.RESET);
+                                sender.sendMessage(SkyRiser.prefix + ChatColor.YELLOW + "Warning: This style requires a hologram plugin to fully work! Install Holographic Displays!");
+                            }
+                        }
+                        else if (action.action_type.equalsIgnoreCase("particle")) {
+                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)));
+
+                            if (SkyRiser.useParticleLib) {
+                                // TODO: Add this
+                            }
+                            else {
+                                sender.sendMessage(SkyRiser.prefix + ChatColor.YELLOW + "Warning: This style requires ParticleLib to fully work!");
                             }
                         }
                     }
                 }
-                if (sender instanceof Player && SkyRiser.useWorldEdit) {
-                    com.sk89q.worldedit.WorldEdit.getInstance().getSessionManager().get(com.sk89q.worldedit.bukkit.BukkitAdapter.adapt((Player) sender)).remember(WorldEditUtils.editSession);
-                    WorldEditUtils.editSession.close();
-                    WorldEditUtils.Reset();
+                if (sender instanceof Player) {
+                    if (segmentBuild) {
+                        if (SkyRiser.instance.addPlayerBuilder(sender.getName(), builder))
+                            sender.sendMessage(SkyRiser.prefix + ChatColor.GREEN + "Started building something, stop with " + ChatColor.DARK_GREEN + "/skyscraper stop" + ChatColor.GREEN + ".");
+                        else
+                            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You are already building something, stop with " + ChatColor.DARK_RED + "/skyscraper stop" + ChatColor.RED + ".");
+                    }
+                    else
+                        builder.build();
                 }
+                else
+                    builder.build();
             }
         }
 
