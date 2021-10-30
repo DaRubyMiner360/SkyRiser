@@ -31,6 +31,7 @@ import java.util.Map;
 
 public class Builder {
     public LinkedHashMap<Location, BlockData> originalBlocks = new LinkedHashMap<>();
+    public LinkedHashMap<Location, BlockData> undoneBlocks = new LinkedHashMap<>();
     public LinkedHashMap<Location, BlockData> blocks = new LinkedHashMap<>();
     protected boolean shouldRotate;
     protected CommandSender sender;
@@ -41,7 +42,6 @@ public class Builder {
     }
 
     public void addBlock(Location location, BlockData blockData) {
-        originalBlocks.put(location, location.getBlock().getBlockData());
         blocks.put(location, blockData);
     }
 
@@ -121,8 +121,10 @@ public class Builder {
 //                rotation.multiply(-1);
             }
 
+            originalBlocks.put(location, location.getBlock().getBlockData());
             location.getBlock().setType(block.getValue().getMaterial(), false);
             location.getBlock().setBlockData(block.getValue(), false);
+            undoneBlocks.put(location, location.getBlock().getBlockData());
         }
     }
 
@@ -208,36 +210,46 @@ public class Builder {
             if (((0.0D <= senderRotation) && (senderRotation < 45.0D))) {
                 // West (Negative X, 90 Degrees)
                 if (location.getBlockX() == -layer) {
+                    originalBlocks.put(location, location.getBlock().getBlockData());
                     location.getBlock().setType(block.getValue().getMaterial(), false);
                     location.getBlock().setBlockData(block.getValue(), false);
+                    undoneBlocks.put(location, location.getBlock().getBlockData());
                 }
             }
             else if ((45.0D <= senderRotation) && (senderRotation < 135.0D)) {
                 // North (Negative Z, 180 Degrees)
                 if (location.getBlockZ() == -layer) {
+                    originalBlocks.put(location, location.getBlock().getBlockData());
                     location.getBlock().setType(block.getValue().getMaterial(), false);
                     location.getBlock().setBlockData(block.getValue(), false);
+                    undoneBlocks.put(location, location.getBlock().getBlockData());
                 }
             }
             else if ((135.0D <= senderRotation) && (senderRotation < 225.0D)) {
                 // East (Positive X, 270 Degrees)
                 if (location.getBlockX() == layer) {
+                    originalBlocks.put(location, location.getBlock().getBlockData());
                     location.getBlock().setType(block.getValue().getMaterial(), false);
                     location.getBlock().setBlockData(block.getValue(), false);
+                    undoneBlocks.put(location, location.getBlock().getBlockData());
                 }
             }
             else if ((225.0D <= senderRotation) && (senderRotation < 315.0D)) {
                 // South (Positive Z, 0 Degrees)
                 if (location.getBlockZ() == layer) {
+                    originalBlocks.put(location, location.getBlock().getBlockData());
                     location.getBlock().setType(block.getValue().getMaterial(), false);
                     location.getBlock().setBlockData(block.getValue(), false);
+                    undoneBlocks.put(location, location.getBlock().getBlockData());
                 }
             }
             else if ((315.0D <= senderRotation) && (senderRotation < 360.0D)) {
                 // West (Negative X, 90 Degrees)
                 if (location.getBlockX() == -layer) {
+                    originalBlocks.put(location, location.getBlock().getBlockData());
                     location.getBlock().setType(block.getValue().getMaterial(), false);
                     location.getBlock().setBlockData(block.getValue(), false);
+                    undoneBlocks.put(location, location.getBlock().getBlockData());
                 }
             }
         }
@@ -331,4 +343,11 @@ public class Builder {
             block.getKey().getBlock().setBlockData(block.getValue(), false);
         }
     }
+
+    public void redo() {
+        for (Map.Entry<Location, BlockData> block : undoneBlocks.entrySet()) {
+            block.getKey().getBlock().setType(block.getValue().getMaterial(), false);
+            block.getKey().getBlock().setBlockData(block.getValue(), false);
+        }
+    }inalB
 }

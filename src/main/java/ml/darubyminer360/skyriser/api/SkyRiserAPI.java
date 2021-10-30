@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SkyRiserAPI {
-    static final List<Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean>> customActions = new ArrayList<>();
+    static List<Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean>> customActions = new ArrayList<>();
 
 
     public static boolean addAction(Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean> action) {
@@ -41,5 +41,21 @@ public class SkyRiserAPI {
 
     public static List<Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean>> getActions() {
         return customActions;
+    }
+
+    public static boolean undo(String playerName, int amount) {
+        return SkyRiser.instance.undo(playerName, amount);
+    }
+
+    public static boolean undo(String playerName) {
+        return SkyRiser.instance.undo(playerName);
+    }
+
+    public static boolean redo(String playerName, int amount) {
+        return SkyRiser.instance.redo(playerName, amount);
+    }
+
+    public staric boolean redo(String playerName) {
+        return SkyRiser.instance.redo(playerName);
     }
 }

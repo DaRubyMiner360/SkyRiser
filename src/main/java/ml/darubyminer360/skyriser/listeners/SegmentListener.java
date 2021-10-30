@@ -24,10 +24,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class SegmentListener implements Listener {
-    public HashMap<String, Integer> playerLayers;
+    public LinkedHashMap<String, Integer> playerLayers = new LinkedHashMap<>();
 
     public void onPlayerMove(PlayerMoveEvent event) {
         if (event.isCancelled()) {
@@ -47,6 +47,7 @@ public class SegmentListener implements Listener {
     }
 
     public void onPlayerLeave(PlayerQuitEvent event) {
+        playerLayers.remove(event.getPlayer().getName());
         SkyRiser.instance.removePlayerBuilder(event.getPlayer().getName());
     }
 }

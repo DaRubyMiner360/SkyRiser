@@ -119,6 +119,42 @@ public class SkyscraperCommand implements CommandExecutor {
             sender.sendMessage(message);
             return true;
         }
+        else if (args[0].equalsIgnoreCase("redo")) {
+            int amount = 1;
+            Player target;
+            if (args.length > 1)
+                amount = Integer.parseInt(args[1]);
+            if (args.length > 2)
+                target = Bukkit.getPlayer(args[2]);
+            else if (sender instanceof Player)
+                target = (Player) sender;
+            else {
+                sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You can't do this from the console or a command block!");
+                return true;
+            }
+
+            for (int i = 0; i < amount; i++) {
+                if (!SkyRiser.instance.redo(sender.getName())) {
+                    sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Can't redo.");
+                    String message = SkyRiser.prefix + ChatColor.GREEN + "Redid " + i + "action";
+                    if (i != 1)
+                        message += "s";
+                    if (target != sender)
+                        message += " for " + target.getDisplayName();
+                    message += ".";
+                    sender.sendMessage(message);
+                    return true;
+                }
+            }
+            String message = SkyRiser.prefix + ChatColor.GREEN + "Redid " + amount + "action";
+            if (amount != 1)
+                message += "s";
+            if (target != sender)
+                message += " for " + target.getDisplayName();
+            message += ".";
+            sender.sendMessage(message);
+            return true;
+        }
 
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You can't do this from the console!");
@@ -694,8 +730,10 @@ public class SkyscraperCommand implements CommandExecutor {
                     else
                         sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You are already building something, stop with " + ChatColor.DARK_RED + "/skyscraper stop" + ChatColor.RED + ".");
                 }
-                if (builder.blocks.size() > 0)
+                if (builder.blocks.size() > 0) {
+                    SkyRiser.addPlayerHistory(sender.getName(), builder);
                     builder.build();
+                }
             }
         }
 

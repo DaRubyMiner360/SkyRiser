@@ -51,10 +51,13 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
                     valid.add("usage");
                 }
             }
+            else if (args[0].startsWith("r"))
+                    valid.add("redo");
             else if (args[0].equals("")) {
                 valid.add("build");
                 valid.add("stop");
                 valid.add("undo");
+                valid.add("redo");
                 valid.add("usage");
             }
 
@@ -119,6 +122,29 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
             }
         }
         else if (args[0].equalsIgnoreCase("undo")) {
+            if (args.length == 2) {
+                List<String> valid = new ArrayList<>();
+
+                valid.add("0");
+                valid.add("1");
+                valid.add("2");
+                valid.add("3");
+                valid.add("4");
+                valid.add("5");
+
+                return valid;
+            }
+            else if (args.length == 3) {
+                List<String> valid = new ArrayList<>();
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    valid.add(player.getName());
+                }
+
+                return valid;
+            }
+        }
+        else if (args[0].equalsIgnoreCase("redo")) {
             if (args.length == 2) {
                 List<String> valid = new ArrayList<>();
 
