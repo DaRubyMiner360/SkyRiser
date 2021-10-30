@@ -120,20 +120,20 @@ public class CircleGenerator {
 
 
 
-		for (int z = bz - radius; z <= bz + radius; z++) {
-			double distance = ((bx-x) * (bx-x) + ((bz-z) * (bz-z)) + ((by-y) * (by-y)));
-			if (distance < radius * radius && !(hollow && distance < ((radius - 1) * (radius - 1)))) {
-
-				Location l = new Location(centerBlock.getWorld(), x, y, z);
-
-				circleBlocks.add(l);
-			}
-
-		}
-
-
-
-		set.addAll(generateCircle(center, radius, Plane.XY, ignoreEnclosed, allowBurrs, hollow));
+//		for (int z = bz - radius; z <= bz + radius; z++) {
+//			double distance = ((bx-x) * (bx-x) + ((bz-z) * (bz-z)) + ((by-y) * (by-y)));
+//			if (distance < radius * radius && !(hollow && distance < ((radius - 1) * (radius - 1)))) {
+//
+//				Location l = new Location(centerBlock.getWorld(), x, y, z);
+//
+//				circleBlocks.add(l);
+//			}
+//
+//		}
+//
+//
+//
+//		set.addAll(generateCircle(center, radius, Plane.XY, ignoreEnclosed, allowBurrs, hollow));
 		return set;
 	}
 
@@ -153,7 +153,7 @@ public class CircleGenerator {
 	 * @throws IllegalArgumentException if center point is null, plane is null, or
 	 *                                  radius is less than zero
 	 */
-	public static HashSet<Location> generateCircle(Location center, int radius, Plane plane, boolean ignoreEnclosed, boolean allowBurrs, boolean hollow) {
+	public static HashSet<Location> generateCircle(Location center, int radius, Plane plane, boolean hollow, boolean ignoreEnclosed, boolean allowBurrs) {
 		if (center == null || radius < 0 || plane == null)
 			throw new IllegalArgumentException("Incorrect parameter(s)!"); // either of these three conditions would
 																			// make the parameters invalid
@@ -182,7 +182,7 @@ public class CircleGenerator {
 			
 			if (!allowBurrs) {
 				switch (plane) {
-				case XZ:
+					case XZ:
 					locs.remove(new RelativeLocation(0,0, radius));
 					locs.add(new RelativeLocation(0, 0, radius-1));
 					

@@ -26,12 +26,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class Builder {
-    public TreeMap<Location, BlockData> originalBlocks;
-    public TreeMap<Location, BlockData> blocks;
+    public LinkedHashMap<Location, BlockData> originalBlocks = new LinkedHashMap<>();
+    public LinkedHashMap<Location, BlockData> blocks = new LinkedHashMap<>();
     protected boolean shouldRotate;
     protected CommandSender sender;
 
@@ -60,7 +60,7 @@ public class Builder {
 
         Location center = origin.add(direction);
 
-        TreeMap<Location, BlockData> blocks = new TreeMap<>(this.blocks);
+        LinkedHashMap<Location, BlockData> blocks = new LinkedHashMap<>(this.blocks);
         int smallest = 0;
         int largest = 0;
         int amount = 0;
@@ -141,7 +141,7 @@ public class Builder {
 
         Location center = origin.add(direction);
 
-        TreeMap<Location, BlockData> blocks = new TreeMap<>(this.blocks);
+        LinkedHashMap<Location, BlockData> blocks = new LinkedHashMap<>(this.blocks);
         layer -= 1;
         int smallest = 0;
         int largest = 0;

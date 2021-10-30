@@ -5,8 +5,8 @@
   // The building part
   "actions": [
     {
-      "action_type": "hollowcube",
-      "action": "{x_pos} {y_pos - 1} {z_pos} {x_pos + (x_scale - 1)} {y_pos + (y_scale - 1)} {z_pos + (z_scale - 1)} {palette[0]}"
+      "action_type": "cube",
+      "action": "{x_pos} {y_pos - 1} {z_pos} {x_pos + (x_scale - 1)} {y_pos + (y_scale - 1)} {z_pos + (z_scale - 1)} {palette[0]} true"
     },
     {
       "action_type": "cube",

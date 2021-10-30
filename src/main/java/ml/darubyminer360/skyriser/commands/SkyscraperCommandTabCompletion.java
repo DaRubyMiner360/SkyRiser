@@ -37,10 +37,26 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
         if (args.length == 1) {
             List<String> valid = new ArrayList<>();
 
-            valid.add("build");
-            valid.add("stop");
-            valid.add("undo");
-            valid.add("usage");
+            if (args[0].startsWith("b"))
+                valid.add("build");
+            else if (args[0].startsWith("s"))
+                valid.add("stop");
+            else if (args[0].startsWith("u")) {
+                if (args[0].startsWith("un"))
+                    valid.add("undo");
+                else if (args[0].startsWith("us"))
+                    valid.add("usage");
+                else if (args[0].equals("u")) {
+                    valid.add("undo");
+                    valid.add("usage");
+                }
+            }
+            else if (args[0].equals("")) {
+                valid.add("build");
+                valid.add("stop");
+                valid.add("undo");
+                valid.add("usage");
+            }
 
             return valid;
         }

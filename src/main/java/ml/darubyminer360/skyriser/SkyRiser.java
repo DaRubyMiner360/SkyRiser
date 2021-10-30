@@ -45,8 +45,8 @@ public final class SkyRiser extends JavaPlugin {
 
     public static UpdateChecker updateChecker;
 
-    public HashMap<String, Builder> playerBuilders;
-    public HashMap<String, List<Builder>> playerHistories;
+    public HashMap<String, Builder> playerBuilders = new HashMap<>();
+    public HashMap<String, List<Builder>> playerHistories = new HashMap<>();
 
     File undoSave;
 

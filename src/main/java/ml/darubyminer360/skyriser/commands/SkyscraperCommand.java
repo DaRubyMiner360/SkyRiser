@@ -246,8 +246,8 @@ public class SkyscraperCommand implements CommandExecutor {
                     return true;
                 }
 
-                boolean segmentBuild = false;
                 Builder builder = new Builder(sender, style.rotate);
+                Builder segmentBuilder = new Builder(sender, style.rotate);
                 for (Style.Action action : style.actions) {
                     List<String> s = Arrays.asList(action.action.replaceAll("^.*?\\{", "").split("}.*?(\\{|$)"));
                     for (String str : s) {
@@ -342,41 +342,16 @@ public class SkyscraperCommand implements CommandExecutor {
                         }
                     }
                     if (!done) {
-//                        ExecutorService executor = Executors.newFixedThreadPool(10);
-//                        executor.execute(() -> {
-//                        });
                         if (action.action_type.equalsIgnoreCase("cube") || action.action_type.equalsIgnoreCase("fill")) {
                             Location startLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
                             Location endLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)), Integer.parseInt(splitStr.get(5)));
+                            boolean hollow = false;
+                            if (splitStr.size() > 6)
+                                hollow = Boolean.parseBoolean(splitStr.get(6));
                             for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
                                 for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
                                     for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
-                                        Location loc = new Location(CommandUtils.getWorld(sender), x, y, z);
-                                        builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
-                                    }
-                                }
-                            }
-                        }
-                        if (action.action_type.equalsIgnoreCase("segmentcube") || action.action_type.equalsIgnoreCase("segcube") || action.action_type.equalsIgnoreCase("scube") || action.action_type.equalsIgnoreCase("segmentfill") || action.action_type.equalsIgnoreCase("segfill") || action.action_type.equalsIgnoreCase("sfill")) {
-                            segmentBuild = true;
-                            Location startLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            Location endLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)), Integer.parseInt(splitStr.get(5)));
-                            for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
-                                for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
-                                    for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
-                                        Location loc = new Location(CommandUtils.getWorld(sender), x, y, z);
-                                        builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
-                                    }
-                                }
-                            }
-                        }
-                        else if (action.action_type.equalsIgnoreCase("hollowcube")) {
-                            Location startLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            Location endLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)), Integer.parseInt(splitStr.get(5)));
-                            for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
-                                for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
-                                    for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
-                                        if (x == startLoc.getBlockX() || x == endLoc.getBlockX() || y == startLoc.getBlockY() || y == endLoc.getBlockY() || z == startLoc.getBlockZ() || z == endLoc.getBlockZ()) {
+                                        if (!hollow || (x == startLoc.getBlockX() || x == endLoc.getBlockX() || y == startLoc.getBlockY() || y == endLoc.getBlockY() || z == startLoc.getBlockZ() || z == endLoc.getBlockZ())) {
                                             Location loc = new Location(CommandUtils.getWorld(sender), x, y, z);
                                             builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
                                         }
@@ -384,16 +359,18 @@ public class SkyscraperCommand implements CommandExecutor {
                                 }
                             }
                         }
-                        else if (action.action_type.equalsIgnoreCase("segmenthollowcube") || action.action_type.equalsIgnoreCase("seghollowcube") || action.action_type.equalsIgnoreCase("shollowcube")) {
-                            segmentBuild = true;
+                        else if (action.action_type.equalsIgnoreCase("segmentcube") || action.action_type.equalsIgnoreCase("segcube") || action.action_type.equalsIgnoreCase("scube") || action.action_type.equalsIgnoreCase("segmentfill") || action.action_type.equalsIgnoreCase("segfill") || action.action_type.equalsIgnoreCase("sfill")) {
                             Location startLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
                             Location endLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)), Integer.parseInt(splitStr.get(5)));
-                            for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
-                                for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+                            boolean hollow = false;
+                            if (splitStr.size() > 6)
+                                hollow = Boolean.parseBoolean(splitStr.get(6));
+                            for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
+                                for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
                                     for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
-                                        if (x == startLoc.getBlockX() || x == endLoc.getBlockX() || y == startLoc.getBlockY() || y == endLoc.getBlockY() || z == startLoc.getBlockZ() || z == endLoc.getBlockZ()) {
+                                        if (!hollow || (x == startLoc.getBlockX() || x == endLoc.getBlockX() || y == startLoc.getBlockY() || y == endLoc.getBlockY() || z == startLoc.getBlockZ() || z == endLoc.getBlockZ())) {
                                             Location loc = new Location(CommandUtils.getWorld(sender), x, y, z);
-                                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
+                                            segmentBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
                                         }
                                     }
                                 }
@@ -404,54 +381,63 @@ public class SkyscraperCommand implements CommandExecutor {
                             builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
                         }
                         else if (action.action_type.equalsIgnoreCase("segmentblock") || action.action_type.equalsIgnoreCase("segblock") || action.action_type.equalsIgnoreCase("sblock")) {
-                            segmentBuild = true;
                             Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                            segmentBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
                         }
                         else if (action.action_type.equalsIgnoreCase("circle")) {
-                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            // TODO: Add circles
-//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                            Location center = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            int radius = Integer.parseInt(splitStr.get(4));
+                            CircleGenerator.Plane plane = CircleGenerator.Plane.valueOf(splitStr.get(5).toUpperCase());
+                            boolean hollow = false;
+                            boolean ignoreEnclosed = false;
+                            boolean allowBurrs = false;
+                            if (splitStr.size() > 6)
+                                hollow = Boolean.parseBoolean(splitStr.get(6));
+                            if (splitStr.size() > 7)
+                                ignoreEnclosed = Boolean.parseBoolean(splitStr.get(7));
+                            if (splitStr.size() > 8)
+                                allowBurrs = Boolean.parseBoolean(splitStr.get(8));
+                            for (Location loc : CircleGenerator.generateCircle(center, radius, plane, hollow, ignoreEnclosed, allowBurrs)) {
+                                builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                            }
                         }
                         else if (action.action_type.equalsIgnoreCase("segmentcircle") || action.action_type.equalsIgnoreCase("segcircle") || action.action_type.equalsIgnoreCase("scircle")) {
-                            segmentBuild = true;
-                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            // TODO: Add segment circles
-//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                            Location center = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                            int radius = Integer.parseInt(splitStr.get(4));
+                            CircleGenerator.Plane plane = CircleGenerator.Plane.valueOf(splitStr.get(5).toUpperCase());
+                            boolean hollow = false;
+                            boolean ignoreEnclosed = false;
+                            boolean allowBurrs = false;
+                            if (splitStr.size() > 6)
+                                hollow = Boolean.parseBoolean(splitStr.get(6));
+                            if (splitStr.size() > 7)
+                                ignoreEnclosed = Boolean.parseBoolean(splitStr.get(7));
+                            if (splitStr.size() > 8)
+                                allowBurrs = Boolean.parseBoolean(splitStr.get(8));
+                            for (Location loc : CircleGenerator.generateCircle(center, radius, plane, hollow, ignoreEnclosed, allowBurrs)) {
+                                segmentBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                            }
                         }
-                        else if (action.action_type.equalsIgnoreCase("hollowcircle")) {
-                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            // TODO: Add hollow circles
-//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-                        }
-                        else if (action.action_type.equalsIgnoreCase("segmenthollowcircle") || action.action_type.equalsIgnoreCase("seghollowcircle") || action.action_type.equalsIgnoreCase("shollowcircle")) {
-                            segmentBuild = true;
-                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            // TODO: Add segment hollow circles
-//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-                        }
-                        else if (action.action_type.equalsIgnoreCase("sphere")) {
-                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            // TODO: Add spheres
-//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-                        }
-                        else if (action.action_type.equalsIgnoreCase("segmentsphere") || action.action_type.equalsIgnoreCase("segsphere") || action.action_type.equalsIgnoreCase("ssphere")) {
-                            segmentBuild = true;
-                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            // TODO: Add segment spheres
-//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-                        }
-                        else if (action.action_type.equalsIgnoreCase("hollowsphere")) {
-                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            // TODO: Add hollow spheres
-//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-                        }
-                        else if (action.action_type.equalsIgnoreCase("segmenthollowsphere") || action.action_type.equalsIgnoreCase("seghollowsphere") || action.action_type.equalsIgnoreCase("shollowsphere")) {
-                            segmentBuild = true;
-                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            // TODO: Add segment hollow spheres
-//                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-                        }
+//                        else if (action.action_type.equalsIgnoreCase("sphere")) {
+//                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+//                            // TODO: Add spheres
+////                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+//                        }
+//                        else if (action.action_type.equalsIgnoreCase("segmentsphere") || action.action_type.equalsIgnoreCase("segsphere") || action.action_type.equalsIgnoreCase("ssphere")) {
+//                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+//                            // TODO: Add segment spheres
+////                            segmentBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+//                        }
+//                        else if (action.action_type.equalsIgnoreCase("hollowsphere")) {
+//                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+//                            // TODO: Add hollow spheres
+////                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+//                        }
+//                        else if (action.action_type.equalsIgnoreCase("segmenthollowsphere") || action.action_type.equalsIgnoreCase("seghollowsphere") || action.action_type.equalsIgnoreCase("shollowsphere")) {
+//                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+//                            // TODO: Add segment hollow spheres
+////                            segmentBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+//                        }
                         else if (action.action_type.equalsIgnoreCase("summon") || action.action_type.equalsIgnoreCase("summonmob") || action.action_type.equalsIgnoreCase("summonentity") || action.action_type.equalsIgnoreCase("spawnmob") || action.action_type.equalsIgnoreCase("spawnentity")) {
                             World world = CommandUtils.getWorld(sender);
                             Location loc = new Location(world, Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)));
@@ -702,17 +688,13 @@ public class SkyscraperCommand implements CommandExecutor {
                         }
                     }
                 }
-                if (sender instanceof Player) {
-                    if (segmentBuild) {
-                        if (SkyRiser.instance.addPlayerBuilder(sender.getName(), builder))
-                            sender.sendMessage(SkyRiser.prefix + ChatColor.GREEN + "Started building something, stop with " + ChatColor.DARK_GREEN + "/skyscraper stop" + ChatColor.GREEN + ".");
-                        else
-                            sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You are already building something, stop with " + ChatColor.DARK_RED + "/skyscraper stop" + ChatColor.RED + ".");
-                    }
+                if (sender instanceof Player && segmentBuilder.blocks.size() > 0) {
+                    if (SkyRiser.instance.addPlayerBuilder(sender.getName(), segmentBuilder))
+                        sender.sendMessage(SkyRiser.prefix + ChatColor.GREEN + "Started building something, stop with " + ChatColor.DARK_GREEN + "/skyscraper stop" + ChatColor.GREEN + ".");
                     else
-                        builder.build();
+                        sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You are already building something, stop with " + ChatColor.DARK_RED + "/skyscraper stop" + ChatColor.RED + ".");
                 }
-                else
+                if (builder.blocks.size() > 0)
                     builder.build();
             }
         }
