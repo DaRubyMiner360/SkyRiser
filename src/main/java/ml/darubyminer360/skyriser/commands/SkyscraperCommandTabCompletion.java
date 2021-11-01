@@ -50,8 +50,7 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
                     valid.add("undo");
                     valid.add("usage");
                 }
-            }
-            else if (args[0].startsWith("r"))
+            } else if (args[0].startsWith("r"))
                     valid.add("redo");
             else if (args[0].equals("")) {
                 valid.add("build");
@@ -62,8 +61,7 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
             }
 
             return valid;
-        }
-        else if (args[0].equalsIgnoreCase("build")) {
+        } else if (args[0].equalsIgnoreCase("build")) {
             if (args.length == 2) {
                 SkyRiser.styleManager.loadStyles();
 
@@ -74,8 +72,28 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
                 }
 
                 return valid;
-            }
-            else if (args.length == 3) {
+            } else if (args.length == 3) {
+                SkyRiser.paletteManager.loadPalettes();
+
+                List<String> valid = new ArrayList<>();
+
+                for (Map.Entry<String, Palette> palette : SkyRiser.paletteManager.getPalettes().entrySet()) {
+                    valid.add(palette.getKey());
+                }
+
+                return valid;
+            } else if (args.length == 4) {
+                List<String> valid = new ArrayList<>();
+
+                valid.add("0");
+                valid.add("1");
+                valid.add("2");
+                valid.add("3");
+                valid.add("4");
+                valid.add("5");
+
+                return valid;
+            } else if (args.length == 5) {
                 SkyRiser.paletteManager.loadPalettes();
 
                 List<String> valid = new ArrayList<>();
@@ -86,31 +104,7 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
 
                 return valid;
             }
-            else if (args.length == 4) {
-                List<String> valid = new ArrayList<>();
-
-                valid.add("0");
-                valid.add("1");
-                valid.add("2");
-                valid.add("3");
-                valid.add("4");
-                valid.add("5");
-
-                return valid;
-            }
-            else if (args.length == 5) {
-                SkyRiser.paletteManager.loadPalettes();
-
-                List<String> valid = new ArrayList<>();
-
-                for (Map.Entry<String, Palette> palette : SkyRiser.paletteManager.getPalettes().entrySet()) {
-                    valid.add(palette.getKey());
-                }
-
-                return valid;
-            }
-        }
-        else if (args[0].equalsIgnoreCase("stop")) {
+        } else if (args[0].equalsIgnoreCase("stop")) {
             if (args.length == 2) {
                 List<String> valid = new ArrayList<>();
 
@@ -120,8 +114,7 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
 
                 return valid;
             }
-        }
-        else if (args[0].equalsIgnoreCase("undo")) {
+        } else if (args[0].equalsIgnoreCase("undo")) {
             if (args.length == 2) {
                 List<String> valid = new ArrayList<>();
 
@@ -133,8 +126,7 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
                 valid.add("5");
 
                 return valid;
-            }
-            else if (args.length == 3) {
+            } else if (args.length == 3) {
                 List<String> valid = new ArrayList<>();
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -143,8 +135,7 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
 
                 return valid;
             }
-        }
-        else if (args[0].equalsIgnoreCase("redo")) {
+        } else if (args[0].equalsIgnoreCase("redo")) {
             if (args.length == 2) {
                 List<String> valid = new ArrayList<>();
 
@@ -156,8 +147,7 @@ public class SkyscraperCommandTabCompletion implements TabCompleter {
                 valid.add("5");
 
                 return valid;
-            }
-            else if (args.length == 3) {
+            } else if (args.length == 3) {
                 List<String> valid = new ArrayList<>();
 
                 for (Player player : Bukkit.getOnlinePlayers()) {

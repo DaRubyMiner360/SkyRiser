@@ -18,6 +18,9 @@
 
 package ml.darubyminer360.skyriser.commands;
 
+import com.gmail.filoghost.holographicdisplays.disk.HologramDatabase;
+import com.gmail.filoghost.holographicdisplays.object.NamedHologram;
+import com.gmail.filoghost.holographicdisplays.object.NamedHologramManager;
 import ml.darubyminer360.skyriser.SkyRiser;
 import ml.darubyminer360.skyriser.api.PreSkyscraperBuildEvent;
 import ml.darubyminer360.skyriser.api.SkyRiserAPI;
@@ -53,8 +56,7 @@ public class SkyscraperCommand implements CommandExecutor {
 
         if (args[0].equalsIgnoreCase("usage")) {
             return false;
-        }
-        else if (args[0].equalsIgnoreCase("stop")) {
+        } else if (args[0].equalsIgnoreCase("stop")) {
             Player target;
             if (args.length > 1)
                 target = Bukkit.getPlayer(args[1]);
@@ -71,8 +73,7 @@ public class SkyscraperCommand implements CommandExecutor {
                     message += " for " + target.getDisplayName();
                 message += ".";
                 sender.sendMessage(message);
-            }
-            else {
+            } else {
                 String message = SkyRiser.prefix + ChatColor.RED + " ";
                 if (target == sender)
                     message += "You aren't";
@@ -82,8 +83,7 @@ public class SkyscraperCommand implements CommandExecutor {
                 sender.sendMessage(message);
             }
             return true;
-        }
-        else if (args[0].equalsIgnoreCase("undo")) {
+        } else if (args[0].equalsIgnoreCase("undo")) {
             int amount = 1;
             Player target;
             if (args.length > 1)
@@ -100,7 +100,7 @@ public class SkyscraperCommand implements CommandExecutor {
             for (int i = 0; i < amount; i++) {
                 if (!SkyRiser.instance.undo(sender.getName())) {
                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Can't undo.");
-                    String message = SkyRiser.prefix + ChatColor.GREEN + "Undid " + i + "action";
+                    String message = SkyRiser.prefix + ChatColor.GREEN + "Undid " + i + " action";
                     if (i != 1)
                         message += "s";
                     if (target != sender)
@@ -110,7 +110,7 @@ public class SkyscraperCommand implements CommandExecutor {
                     return true;
                 }
             }
-            String message = SkyRiser.prefix + ChatColor.GREEN + "Undid " + amount + "action";
+            String message = SkyRiser.prefix + ChatColor.GREEN + "Undid " + amount + " action";
             if (amount != 1)
                 message += "s";
             if (target != sender)
@@ -118,8 +118,7 @@ public class SkyscraperCommand implements CommandExecutor {
             message += ".";
             sender.sendMessage(message);
             return true;
-        }
-        else if (args[0].equalsIgnoreCase("redo")) {
+        } else if (args[0].equalsIgnoreCase("redo")) {
             int amount = 1;
             Player target;
             if (args.length > 1)
@@ -136,7 +135,7 @@ public class SkyscraperCommand implements CommandExecutor {
             for (int i = 0; i < amount; i++) {
                 if (!SkyRiser.instance.redo(sender.getName())) {
                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Can't redo.");
-                    String message = SkyRiser.prefix + ChatColor.GREEN + "Redid " + i + "action";
+                    String message = SkyRiser.prefix + ChatColor.GREEN + "Redid " + i + " action";
                     if (i != 1)
                         message += "s";
                     if (target != sender)
@@ -146,7 +145,7 @@ public class SkyscraperCommand implements CommandExecutor {
                     return true;
                 }
             }
-            String message = SkyRiser.prefix + ChatColor.GREEN + "Redid " + amount + "action";
+            String message = SkyRiser.prefix + ChatColor.GREEN + "Redid " + amount + " action";
             if (amount != 1)
                 message += "s";
             if (target != sender)
@@ -164,8 +163,7 @@ public class SkyscraperCommand implements CommandExecutor {
         if (args.length == 1) {
             sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Missing argument: style!");
             return true;
-        }
-        else if (args.length == 2) {
+        } else if (args.length == 2) {
             sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: Missing argument: palette!");
             return true;
         }
@@ -382,8 +380,8 @@ public class SkyscraperCommand implements CommandExecutor {
                             Location startLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
                             Location endLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)), Integer.parseInt(splitStr.get(5)));
                             boolean hollow = false;
-                            if (splitStr.size() > 6)
-                                hollow = Boolean.parseBoolean(splitStr.get(6));
+                            if (splitStr.size() > 7)
+                                hollow = Boolean.parseBoolean(splitStr.get(7));
                             for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
                                 for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
                                     for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
@@ -399,8 +397,8 @@ public class SkyscraperCommand implements CommandExecutor {
                             Location startLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
                             Location endLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)), Integer.parseInt(splitStr.get(5)));
                             boolean hollow = false;
-                            if (splitStr.size() > 6)
-                                hollow = Boolean.parseBoolean(splitStr.get(6));
+                            if (splitStr.size() > 7)
+                                hollow = Boolean.parseBoolean(splitStr.get(7));
                             for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
                                 for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
                                     for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
@@ -693,7 +691,7 @@ public class SkyscraperCommand implements CommandExecutor {
                             Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)));
 
                             if (SkyRiser.useHolographicDisplays) {
-                                com.gmail.filoghost.holographicdisplays.object.NamedHologram hologram = new com.gmail.filoghost.holographicdisplays.object.NamedHologram(loc, splitStr.get(0));
+                                NamedHologram hologram = new NamedHologram(loc, splitStr.get(0));
                                 // TODO: Set the name
 
                                 String linesStr = splitStr.get(4).substring(1, splitStr.get(4).length() - 1);
@@ -702,11 +700,11 @@ public class SkyscraperCommand implements CommandExecutor {
                                 for (String line : lines) {
                                     hologram.appendTextLine(line.substring(1, line.length() - 1));
                                 }
-                                com.gmail.filoghost.holographicdisplays.object.NamedHologramManager.addHologram(hologram);
+                                NamedHologramManager.addHologram(hologram);
                                 hologram.refreshAll();
 
-                                com.gmail.filoghost.holographicdisplays.disk.HologramDatabase.saveHologram(hologram);
-                                com.gmail.filoghost.holographicdisplays.disk.HologramDatabase.trySaveToDisk();
+                                HologramDatabase.saveHologram(hologram);
+                                HologramDatabase.trySaveToDisk();
                             }
                             else {
                                 sender.sendMessage(SkyRiser.prefix + ChatColor.YELLOW + "Warning: This style requires a hologram plugin to fully work! Install Holographic Displays!");
@@ -731,7 +729,7 @@ public class SkyscraperCommand implements CommandExecutor {
                         sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You are already building something, stop with " + ChatColor.DARK_RED + "/skyscraper stop" + ChatColor.RED + ".");
                 }
                 if (builder.blocks.size() > 0) {
-                    SkyRiser.addPlayerHistory(sender.getName(), builder);
+                    SkyRiser.instance.addPlayerHistory(sender.getName(), builder);
                     builder.build();
                 }
             }

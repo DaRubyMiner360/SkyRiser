@@ -19,7 +19,6 @@
 package ml.darubyminer360.skyriser.utils;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -30,8 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Builder {
-    public LinkedHashMap<Location, BlockData> originalBlocks = new LinkedHashMap<>();
-    public LinkedHashMap<Location, BlockData> undoneBlocks = new LinkedHashMap<>();
+    public LinkedHashMap<Location, BlockData> allOriginalBlocks = new LinkedHashMap<>();
+    public LinkedHashMap<Location, BlockData> allBuiltBlocks = new LinkedHashMap<>();
     public LinkedHashMap<Location, BlockData> blocks = new LinkedHashMap<>();
     protected boolean shouldRotate;
     protected CommandSender sender;
@@ -46,14 +45,13 @@ public class Builder {
     }
 
     public void build() {
-        double senderRotation;
+        String senderRotation;
         Location origin;
         if (sender instanceof Player) {
-            senderRotation = (((Player) sender).getLocation().getYaw() - 90.0F) % 360.0F;
+            senderRotation = BlockUtils.getCardinalDirection(((Player) sender).getLocation());
             origin = ((Player) sender).getEyeLocation();
-        }
-        else {
-            senderRotation = (((BlockCommandSender) sender).getBlock().getLocation().getYaw() - 90.0F) % 360.0F;
+        } else {
+            senderRotation = BlockUtils.getCardinalDirection(((BlockCommandSender) sender).getBlock().getLocation());
             origin = ((BlockCommandSender) sender).getBlock().getLocation();
         }
         Vector direction = origin.getDirection();
@@ -68,45 +66,39 @@ public class Builder {
         for (Map.Entry<Location, BlockData> block : blocks.entrySet()) {
             Location location = block.getKey();
 
-            if (((0.0D <= senderRotation) && (senderRotation < 45.0D))) {
-                // West (Negative X, 90 Degrees)
-                amount = 90;
-                if (location.getBlockX() > smallest)
-                    smallest = location.getBlockX();
-                if (location.getBlockX() < largest)
-                    largest = location.getBlockX();
-            }
-            else if ((45.0D <= senderRotation) && (senderRotation < 135.0D)) {
-                // North (Negative Z, 180 Degrees)
-                amount = 180;
-                if (location.getBlockZ() > smallest)
-                    smallest = location.getBlockZ();
-                if (location.getBlockZ() < largest)
-                    largest = location.getBlockZ();
-            }
-            else if ((135.0D <= senderRotation) && (senderRotation < 225.0D)) {
-                // East (Positive X, 270 Degrees)
-                amount = 270;
-                if (location.getBlockX() < smallest)
-                    smallest = location.getBlockX();
-                if (location.getBlockX() > largest)
-                    largest = location.getBlockX();
-            }
-            else if ((225.0D <= senderRotation) && (senderRotation < 315.0D)) {
-                // South (Positive Z, 0 Degrees)
-                amount = 0;
-                if (location.getBlockZ() < smallest)
-                    smallest = location.getBlockZ();
-                if (location.getBlockZ() > largest)
-                    largest = location.getBlockZ();
-            }
-            else if ((315.0D <= senderRotation) && (senderRotation < 360.0D)) {
-                // West (Negative X, 90 Degrees)
-                amount = 90;
-                if (location.getBlockX() > smallest)
-                    smallest = location.getBlockX();
-                if (location.getBlockX() < largest)
-                    largest = location.getBlockX();
+            switch (senderRotation) {
+                case "West" -> {
+                    // West (Negative X, 90 Degrees)
+                    amount = 90;
+                    if (location.getBlockX() > smallest)
+                        smallest = location.getBlockX();
+                    if (location.getBlockX() < largest)
+                        largest = location.getBlockX();
+                }
+                case "North" -> {
+                    // North (Negative Z, 180 Degrees)
+                    amount = 180;
+                    if (location.getBlockZ() > smallest)
+                        smallest = location.getBlockZ();
+                    if (location.getBlockZ() < largest)
+                        largest = location.getBlockZ();
+                }
+                case "East" -> {
+                    // East (Positive X, 270 Degrees)
+                    amount = 270;
+                    if (location.getBlockX() < smallest)
+                        smallest = location.getBlockX();
+                    if (location.getBlockX() > largest)
+                        largest = location.getBlockX();
+                }
+                case "South" -> {
+                    // South (Positive Z, 0 Degrees)
+                    amount = 0;
+                    if (location.getBlockZ() < smallest)
+                        smallest = location.getBlockZ();
+                    if (location.getBlockZ() > largest)
+                        largest = location.getBlockZ();
+                }
             }
         }
 
@@ -114,29 +106,28 @@ public class Builder {
             Location location = block.getKey();
 
             if (shouldRotate) {
-                Vector rotation = BlockUtils.getRotationDirection(origin, amount);
-
-                Vector initialRotation = rotation.clone().multiply((largest - smallest) / 2);
-                location = center.clone().add(location).add(initialRotation).subtract(0, (largest - smallest) / 2, 0);
+//                Vector rotation = BlockUtils.getRotationDirection(origin, amount);
+//
+//                Vector initialRotation = rotation.clone().multiply((largest - smallest) / 4);
+//                location = center.clone().add(location).add(initialRotation).subtract(0, (largest - smallest) / 2, 0);
 //                rotation.multiply(-1);
             }
 
-            originalBlocks.put(location, location.getBlock().getBlockData());
+            allOriginalBlocks.put(location, location.getBlock().getBlockData());
             location.getBlock().setType(block.getValue().getMaterial(), false);
             location.getBlock().setBlockData(block.getValue(), false);
-            undoneBlocks.put(location, location.getBlock().getBlockData());
+            allBuiltBlocks.put(location, location.getBlock().getBlockData());
         }
     }
 
     public void buildLayer(int layer) {
-        double senderRotation;
+        String senderRotation;
         Location origin;
         if (sender instanceof Player) {
-            senderRotation = (((Player) sender).getLocation().getYaw() - 90.0F) % 360.0F;
+            senderRotation = BlockUtils.getCardinalDirection(((Player) sender).getLocation());
             origin = ((Player) sender).getEyeLocation();
-        }
-        else {
-            senderRotation = (((BlockCommandSender) sender).getBlock().getLocation().getYaw() - 90.0F) % 360.0F;
+        } else {
+            senderRotation = BlockUtils.getCardinalDirection(((BlockCommandSender) sender).getBlock().getLocation());
             origin = ((BlockCommandSender) sender).getBlock().getLocation();
         }
         Vector direction = origin.getDirection();
@@ -152,45 +143,39 @@ public class Builder {
         for (Map.Entry<Location, BlockData> block : blocks.entrySet()) {
             Location location = block.getKey();
 
-            if (((0.0D <= senderRotation) && (senderRotation < 45.0D))) {
-                // West (Negative X, 90 Degrees)
-                amount = 90;
-                if (location.getBlockX() > smallest)
-                    smallest = location.getBlockX();
-                if (location.getBlockX() < largest)
-                    largest = location.getBlockX();
-            }
-            else if ((45.0D <= senderRotation) && (senderRotation < 135.0D)) {
-                // North (Negative Z, 180 Degrees)
-                amount = 180;
-                if (location.getBlockZ() > smallest)
-                    smallest = location.getBlockZ();
-                if (location.getBlockZ() < largest)
-                    largest = location.getBlockZ();
-            }
-            else if ((135.0D <= senderRotation) && (senderRotation < 225.0D)) {
-                // East (Positive X, 270 Degrees)
-                amount = 270;
-                if (location.getBlockX() < smallest)
-                    smallest = location.getBlockX();
-                if (location.getBlockX() > largest)
-                    largest = location.getBlockX();
-            }
-            else if ((225.0D <= senderRotation) && (senderRotation < 315.0D)) {
-                // South (Positive Z, 0 Degrees)
-                amount = 0;
-                if (location.getBlockZ() < smallest)
-                    smallest = location.getBlockZ();
-                if (location.getBlockZ() > largest)
-                    largest = location.getBlockZ();
-            }
-            else if ((315.0D <= senderRotation) && (senderRotation < 360.0D)) {
-                // West (Negative X, 90 Degrees)
-                amount = 90;
-                if (location.getBlockX() > smallest)
-                    smallest = location.getBlockX();
-                if (location.getBlockX() < largest)
-                    largest = location.getBlockX();
+            switch (senderRotation) {
+                case "West" -> {
+                    // West (Negative X, 90 Degrees)
+                    amount = 90;
+                    if (location.getBlockX() > smallest)
+                        smallest = location.getBlockX();
+                    if (location.getBlockX() < largest)
+                        largest = location.getBlockX();
+                }
+                case "North" -> {
+                    // North (Negative Z, 180 Degrees)
+                    amount = 180;
+                    if (location.getBlockZ() > smallest)
+                        smallest = location.getBlockZ();
+                    if (location.getBlockZ() < largest)
+                        largest = location.getBlockZ();
+                }
+                case "East" -> {
+                    // East (Positive X, 270 Degrees)
+                    amount = 270;
+                    if (location.getBlockX() < smallest)
+                        smallest = location.getBlockX();
+                    if (location.getBlockX() > largest)
+                        largest = location.getBlockX();
+                }
+                case "South" -> {
+                    // South (Positive Z, 0 Degrees)
+                    amount = 0;
+                    if (location.getBlockZ() < smallest)
+                        smallest = location.getBlockZ();
+                    if (location.getBlockZ() > largest)
+                        largest = location.getBlockZ();
+                }
             }
         }
 
@@ -200,56 +185,59 @@ public class Builder {
             Location location = block.getKey();
 
             if (shouldRotate) {
-                Vector rotation = BlockUtils.getRotationDirection(origin, amount);
-
-                Vector initialRotation = rotation.clone().multiply((largest - smallest) / 2);
-                location = center.clone().add(location).add(initialRotation).subtract(0, (largest - smallest) / 2, 0);
+//                Vector rotation = BlockUtils.getRotationDirection(origin, amount);
+//
+//                Vector initialRotation = rotation.clone().multiply((largest - smallest) / 4);
+//                location = center.clone().add(location).add(initialRotation).subtract(0, (largest - smallest) / 2, 0);
 //                rotation.multiply(-1);
             }
 
-            if (((0.0D <= senderRotation) && (senderRotation < 45.0D))) {
-                // West (Negative X, 90 Degrees)
-                if (location.getBlockX() == -layer) {
-                    originalBlocks.put(location, location.getBlock().getBlockData());
-                    location.getBlock().setType(block.getValue().getMaterial(), false);
-                    location.getBlock().setBlockData(block.getValue(), false);
-                    undoneBlocks.put(location, location.getBlock().getBlockData());
+            switch (senderRotation) {
+                case "West" -> {
+                    // West (Negative X, 90 Degrees)
+                    sender.sendMessage(String.valueOf(location.getBlockX()));
+                    sender.sendMessage(String.valueOf(-layer));
+                    if (location.getBlockX() == layer) {
+                        sender.sendMessage("AA");
+                        allOriginalBlocks.put(location, location.getBlock().getBlockData());
+                        location.getBlock().setType(block.getValue().getMaterial(), false);
+                        location.getBlock().setBlockData(block.getValue(), false);
+                        allBuiltBlocks.put(location, location.getBlock().getBlockData());
+                    } else
+                        sender.sendMessage("AAA");
                 }
-            }
-            else if ((45.0D <= senderRotation) && (senderRotation < 135.0D)) {
-                // North (Negative Z, 180 Degrees)
-                if (location.getBlockZ() == -layer) {
-                    originalBlocks.put(location, location.getBlock().getBlockData());
-                    location.getBlock().setType(block.getValue().getMaterial(), false);
-                    location.getBlock().setBlockData(block.getValue(), false);
-                    undoneBlocks.put(location, location.getBlock().getBlockData());
+                case "North" -> {
+                    // North (Negative Z, 180 Degrees)
+                    if (location.getBlockZ() == layer) {
+                        sender.sendMessage("AB");
+                        allOriginalBlocks.put(location, location.getBlock().getBlockData());
+                        location.getBlock().setType(block.getValue().getMaterial(), false);
+                        location.getBlock().setBlockData(block.getValue(), false);
+                        allBuiltBlocks.put(location, location.getBlock().getBlockData());
+                    } else
+                        sender.sendMessage("AAB");
                 }
-            }
-            else if ((135.0D <= senderRotation) && (senderRotation < 225.0D)) {
-                // East (Positive X, 270 Degrees)
-                if (location.getBlockX() == layer) {
-                    originalBlocks.put(location, location.getBlock().getBlockData());
-                    location.getBlock().setType(block.getValue().getMaterial(), false);
-                    location.getBlock().setBlockData(block.getValue(), false);
-                    undoneBlocks.put(location, location.getBlock().getBlockData());
+                case "East" -> {
+                    // East (Positive X, 270 Degrees)
+                    if (location.getBlockX() == layer) {
+                        sender.sendMessage("AC");
+                        allOriginalBlocks.put(location, location.getBlock().getBlockData());
+                        location.getBlock().setType(block.getValue().getMaterial(), false);
+                        location.getBlock().setBlockData(block.getValue(), false);
+                        allBuiltBlocks.put(location, location.getBlock().getBlockData());
+                    } else
+                        sender.sendMessage("AAC");
                 }
-            }
-            else if ((225.0D <= senderRotation) && (senderRotation < 315.0D)) {
-                // South (Positive Z, 0 Degrees)
-                if (location.getBlockZ() == layer) {
-                    originalBlocks.put(location, location.getBlock().getBlockData());
-                    location.getBlock().setType(block.getValue().getMaterial(), false);
-                    location.getBlock().setBlockData(block.getValue(), false);
-                    undoneBlocks.put(location, location.getBlock().getBlockData());
-                }
-            }
-            else if ((315.0D <= senderRotation) && (senderRotation < 360.0D)) {
-                // West (Negative X, 90 Degrees)
-                if (location.getBlockX() == -layer) {
-                    originalBlocks.put(location, location.getBlock().getBlockData());
-                    location.getBlock().setType(block.getValue().getMaterial(), false);
-                    location.getBlock().setBlockData(block.getValue(), false);
-                    undoneBlocks.put(location, location.getBlock().getBlockData());
+                case "South" -> {
+                    // South (Positive Z, 0 Degrees)
+                    if (location.getBlockZ() == layer) {
+                        sender.sendMessage("AD");
+                        allOriginalBlocks.put(location, location.getBlock().getBlockData());
+                        location.getBlock().setType(block.getValue().getMaterial(), false);
+                        location.getBlock().setBlockData(block.getValue(), false);
+                        allBuiltBlocks.put(location, location.getBlock().getBlockData());
+                    } else
+                        sender.sendMessage("AAD");
                 }
             }
         }
@@ -271,23 +259,19 @@ public class Builder {
                 // West (Negative X, 90 Degrees)
                 if (location.getBlockX() < largest)
                     largest = location.getBlockX();
-            }
-            else if ((45.0D <= senderRotation) && (senderRotation < 135.0D)) {
+            } else if ((45.0D <= senderRotation) && (senderRotation < 135.0D)) {
                 // North (Negative Z, 180 Degrees)
                 if (location.getBlockZ() < largest)
                     largest = location.getBlockZ();
-            }
-            else if ((135.0D <= senderRotation) && (senderRotation < 225.0D)) {
+            } else if ((135.0D <= senderRotation) && (senderRotation < 225.0D)) {
                 // East (Positive X, 270 Degrees)
                 if (location.getBlockX() > largest)
                     largest = location.getBlockX();
-            }
-            else if ((225.0D <= senderRotation) && (senderRotation < 315.0D)) {
+            } else if ((225.0D <= senderRotation) && (senderRotation < 315.0D)) {
                 // South (Positive Z, 0 Degrees)
                 if (location.getBlockZ() > largest)
                     largest = location.getBlockZ();
-            }
-            else if ((315.0D <= senderRotation) && (senderRotation < 360.0D)) {
+            } else if ((315.0D <= senderRotation) && (senderRotation < 360.0D)) {
                 // West (Negative X, 90 Degrees)
                 if (location.getBlockX() < largest)
                     largest = location.getBlockX();
@@ -312,23 +296,19 @@ public class Builder {
                 // West (Negative X, 90 Degrees)
                 if (location.getBlockX() > smallest)
                     smallest = location.getBlockX();
-            }
-            else if ((45.0D <= senderRotation) && (senderRotation < 135.0D)) {
+            } else if ((45.0D <= senderRotation) && (senderRotation < 135.0D)) {
                 // North (Negative Z, 180 Degrees)
                 if (location.getBlockZ() > smallest)
                     smallest = location.getBlockZ();
-            }
-            else if ((135.0D <= senderRotation) && (senderRotation < 225.0D)) {
+            } else if ((135.0D <= senderRotation) && (senderRotation < 225.0D)) {
                 // East (Positive X, 270 Degrees)
                 if (location.getBlockX() < smallest)
                     smallest = location.getBlockX();
-            }
-            else if ((225.0D <= senderRotation) && (senderRotation < 315.0D)) {
+            } else if ((225.0D <= senderRotation) && (senderRotation < 315.0D)) {
                 // South (Positive Z, 0 Degrees)
                 if (location.getBlockZ() < smallest)
                     smallest = location.getBlockZ();
-            }
-            else if ((315.0D <= senderRotation) && (senderRotation < 360.0D)) {
+            } else if ((315.0D <= senderRotation) && (senderRotation < 360.0D)) {
                 // West (Negative X, 90 Degrees)
                 if (location.getBlockX() > smallest)
                     smallest = location.getBlockX();
@@ -338,16 +318,16 @@ public class Builder {
     }
 
     public void undo() {
-        for (Map.Entry<Location, BlockData> block : originalBlocks.entrySet()) {
+        for (Map.Entry<Location, BlockData> block : allOriginalBlocks.entrySet()) {
             block.getKey().getBlock().setType(block.getValue().getMaterial(), false);
             block.getKey().getBlock().setBlockData(block.getValue(), false);
         }
     }
 
     public void redo() {
-        for (Map.Entry<Location, BlockData> block : undoneBlocks.entrySet()) {
+        for (Map.Entry<Location, BlockData> block : allBuiltBlocks.entrySet()) {
             block.getKey().getBlock().setType(block.getValue().getMaterial(), false);
             block.getKey().getBlock().setBlockData(block.getValue(), false);
         }
-    }inalB
+    }
 }

@@ -37,8 +37,7 @@ public class SkyTemplateCommand implements CommandExecutor {
         if (args.length == 0) {
             player.sendMessage(SkyRiser.prefix + ChatColor.RED + "Missing argument: template type!" + ChatColor.RESET);
             return true;
-        }
-        else if (args.length == 1) {
+        } else if (args.length == 1) {
             player.sendMessage(SkyRiser.prefix + ChatColor.RED + "Missing argument: action!" + ChatColor.RESET);
             return true;
         }
@@ -49,8 +48,7 @@ public class SkyTemplateCommand implements CommandExecutor {
                 for (Map.Entry<String, Style> s : SkyRiser.styleManager.getStyles().entrySet()) {
                     player.sendMessage(s.getKey());
                 }
-            }
-            else if (args[1].equalsIgnoreCase("palette")) {
+            } else if (args[1].equalsIgnoreCase("palette")) {
                 SkyRiser.paletteManager.loadPalettes();
                 for (Map.Entry<String, Palette> p : SkyRiser.paletteManager.getPalettes().entrySet()) {
                     player.sendMessage(p.getKey());

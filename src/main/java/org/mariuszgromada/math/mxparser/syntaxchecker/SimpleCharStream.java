@@ -96,8 +96,7 @@ public class SimpleCharStream
         {
           bufpos = maxNextCharInd = 0;
           available = tokenBegin;
-        }
-        else if (tokenBegin < 0)
+        } else if (tokenBegin < 0)
           bufpos = maxNextCharInd = 0;
         else
           ExpandBuff(false);

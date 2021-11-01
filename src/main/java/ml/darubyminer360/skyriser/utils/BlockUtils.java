@@ -33,8 +33,7 @@ public class BlockUtils {
             if (c == delimiter && nextingLevel == 0) {
                 splitted.add(result.toString());
                 result.setLength(0);
-            }
-            else {
+            } else {
                 if (c == '[')
                     nextingLevel++;
                 else if (c == ']')
@@ -59,6 +58,26 @@ public class BlockUtils {
     }
 
     /**
+     * Get the cardinal compass direction of a player.
+     */
+    public static String getCardinalDirection(Location location) {
+        float yaw = location.getYaw();
+        if (yaw < 0) {
+            yaw += 360;
+        }
+        if (yaw >= 315 || yaw < 45) {
+            return "South";
+        } else if (yaw < 135) {
+            return "West";
+        } else if (yaw < 225) {
+            return "North";
+        } else if (yaw < 315) {
+            return "East";
+        }
+        return "North";
+    }
+
+    /**
      *
      * @param centerBlock Define the center of the sphere
      * @param radius Radius of your sphere
@@ -77,10 +96,8 @@ public class BlockUtils {
             for (int y = by - radius; y <= by + radius; y++) {
                 for (int z = bz - radius; z <= bz + radius; z++) {
                     double distance = ((bx - x) * (bx - x) + ((bz - z) * (bz - z)) + ((by - y) * (by - y)));
-                    if (distance < radius * radius && !(hollow && distance < ((radius - 1) * (radius - 1)))) {
+                    if (distance < radius * radius && !(hollow && distance < ((radius - 1) * (radius - 1))))
                         circleBlocks.add(new Location(centerBlock.getWorld(), x, y, z));
-                    }
-
                 }
             }
         }

@@ -18,6 +18,7 @@
 
 package ml.darubyminer360.skyriser.api;
 
+import ml.darubyminer360.skyriser.SkyRiser;
 import ml.darubyminer360.skyriser.files.Palette;
 import ml.darubyminer360.skyriser.files.Style;
 import ml.darubyminer360.skyriser.utils.Function6;
@@ -31,17 +32,11 @@ public class SkyRiserAPI {
     static List<Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean>> customActions = new ArrayList<>();
 
 
-    public static boolean addAction(Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean> action) {
-        return customActions.add(action);
-    }
+    public static boolean addAction(Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean> action) { return customActions.add(action); }
 
-    public static boolean removeAction(Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean> action) {
-        return customActions.remove(action);
-    }
+    public static boolean removeAction(Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean> action) { return customActions.remove(action); }
 
-    public static List<Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean>> getActions() {
-        return customActions;
-    }
+    public static List<Function6<CommandSender, Style, Style.Action, Palette, List<String>, Boolean>> getActions() { return customActions; }
 
     public static boolean undo(String playerName, int amount) {
         return SkyRiser.instance.undo(playerName, amount);
@@ -51,11 +46,9 @@ public class SkyRiserAPI {
         return SkyRiser.instance.undo(playerName);
     }
 
-    public static boolean redo(String playerName, int amount) {
-        return SkyRiser.instance.redo(playerName, amount);
-    }
+    public static boolean redo(String playerName, int amount) { return SkyRiser.instance.redo(playerName, amount); }
 
-    public staric boolean redo(String playerName) {
+    public static boolean redo(String playerName) {
         return SkyRiser.instance.redo(playerName);
     }
 }

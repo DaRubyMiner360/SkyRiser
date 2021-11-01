@@ -20,6 +20,8 @@ package ml.darubyminer360.skyriser.listeners;
 
 import ml.darubyminer360.skyriser.SkyRiser;
 import ml.darubyminer360.skyriser.utils.Builder;
+import org.bukkit.Location;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -29,23 +31,25 @@ import java.util.LinkedHashMap;
 public class SegmentListener implements Listener {
     public LinkedHashMap<String, Integer> playerLayers = new LinkedHashMap<>();
 
+    @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         if (event.isCancelled()) {
             return;
         }
 
-        if (SkyRiser.instance.playerBuilders.containsKey(event.getPlayer().getName())) {
+        if (SkyRiser.instance.playerBuilders.containsKey(event.getPlayer().getName()) && (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ() || event.getFrom().getWorld() != event.getTo().getWorld())) {
             if (!playerLayers.containsKey(event.getPlayer().getName()))
                 playerLayers.put(event.getPlayer().getName(), 1);
             Builder builder = SkyRiser.instance.playerBuilders.get(event.getPlayer().getName());
             builder.buildLayer(playerLayers.get(event.getPlayer().getName()));
-            playerLayers.replace(event.getPlayer().getName(), playerLayers.get(event.getPlayer().getName()), playerLayers.get(event.getPlayer().getName()) + 1);
+            playerLayers.replace(event.getPlayer().getName(), playerLayers.get(event.getPlayer().getName()) + 1);
 
             if (SkyRiser.instance.playerBuilders.get(event.getPlayer().getName()).getLargest() - SkyRiser.instance.playerBuilders.get(event.getPlayer().getName()).getSmallest() <= playerLayers.get(event.getPlayer().getName()) - 1)
                 playerLayers.replace(event.getPlayer().getName(), playerLayers.get(event.getPlayer().getName()), 1);
         }
     }
 
+    @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
         playerLayers.remove(event.getPlayer().getName());
         SkyRiser.instance.removePlayerBuilder(event.getPlayer().getName());

@@ -141,13 +141,14 @@ public final class SkyRiser extends JavaPlugin {
         if (playerHistories.containsKey(playerName))
             playerHistories.get(playerName).add(builder);
         else
-            playerHistories.put(playerName, List.of(builder));
+            playerHistories.put(playerName, new ArrayList<>(List.of(builder)));
     }
 
     public boolean removePlayerHistory(String playerName) {
         if (!playerHistories.containsKey(playerName) || playerHistories.get(playerName).size() == 0)
             return false;
         playerHistories.get(playerName).remove(playerHistories.get(playerName).size() - 1);
+        return true;
     }
 
     public boolean undo(String playerName, int amount) {
@@ -156,6 +157,9 @@ public final class SkyRiser extends JavaPlugin {
 
         for (int i = 0; i < amount; i++) {
             playerHistories.get(playerName).get(playerHistories.get(playerName).size() - 1).undo();
+            if (!playerUndoneHistories.containsKey(playerName))
+                playerUndoneHistories.put(playerName, new ArrayList<>());
+            playerUndoneHistories.get(playerName).add(playerHistories.get(playerName).get(playerHistories.get(playerName).size() - 1));
             removePlayerHistory(playerName);
         }
         removePlayerBuilder(playerName);
@@ -184,12 +188,12 @@ public final class SkyRiser extends JavaPlugin {
 
     public void serializeUndos(File file) {
         if (playerHistories.size() > 0) {
-            ObjectOutputStream oos;
+            ObjectOutputStream oos = null;
             try {
                 file.createNewFile();
 
                 oos = new ObjectOutputStream(new FileOutputStream(file));
-                oos.writeObject(LinkedHashMap<String, List<Builder>>[]{ playerHistories, playerUndoneHistories });
+                oos.writeObject(new ArrayList<>(Arrays.asList(playerHistories, playerUndoneHistories)));
             } catch (IOException ex) {
                 getLogger().warning(prefix + "Unable to save history file.");
             } finally {
@@ -203,23 +207,14 @@ public final class SkyRiser extends JavaPlugin {
     }
 
     public void deserializeUndos(File file) {
-        ObjectInputStream ois = null;
-        try {
-            ois = new ObjectInputStream(new FileInputStream(file));
-            LinkedHashMap<String, List<Builder>>[] histories = (LinkedHashMap<String, List<Builder>>[]) ois.readObject();
-            playerHistories = histories[0];
-            playerUndoneHistories = histories[1];
-            ois.close();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            List<LinkedHashMap<String, List<Builder>>> histories = (List<LinkedHashMap<String, List<Builder>>>) ois.readObject();
+            playerHistories = new LinkedHashMap<>(histories.get(0));
+            playerUndoneHistories = new LinkedHashMap<>(histories.get(1));
         } catch (Exception ex) {
             if (!(ex instanceof FileNotFoundException))
                 getLogger().warning(prefix + "Unable to load history file.");
             playerHistories = new LinkedHashMap<>();
-        } finally {
-            if (ois != null) {
-                try {
-                    ois.close();
-                } catch (IOException ignored) {}
-            }
         }
     }
 }
