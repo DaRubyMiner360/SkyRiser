@@ -34,6 +34,8 @@ import org.bukkit.entity.Player;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 
+import io.github.bananapuncher714.nbteditor.NBTEditor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -188,12 +190,10 @@ public class SkyscraperCommand implements CommandExecutor {
                     if (varsRegexMatcher.group(1) != null) {
                         // Add double-quoted string without the quotes
                         vars.add(varsRegexMatcher.group(1));
-                    }
-                    else if (varsRegexMatcher.group(2) != null) {
+                    } else if (varsRegexMatcher.group(2) != null) {
                         // Add single-quoted string without the quotes
                         vars.add(varsRegexMatcher.group(2));
-                    }
-                    else {
+                    } else {
                         // Add unquoted word
                         vars.add(varsRegexMatcher.group());
                     }
@@ -280,8 +280,10 @@ public class SkyscraperCommand implements CommandExecutor {
                     return true;
                 }
 
-                Builder builder = new Builder(sender, style.rotate);
-                Builder segmentBuilder = new Builder(sender, style.rotate);
+                BlockBuilder blockBuilder = new BlockBuilder(sender, style.rotate);
+                BlockBuilder segmentBlockBuilder = new BlockBuilder(sender, style.rotate);
+                EntityBuilder entityBuilder = new EntityBuilder(sender, style.rotate);
+                EntityBuilder segmentEntityBuilder = new EntityBuilder(sender, style.rotate);
                 for (Style.Action action : style.actions) {
                     List<String> s = Arrays.asList(action.action.replaceAll("^.*?\\{", "").split("}.*?(\\{|$)"));
                     for (String str : s) {
@@ -314,8 +316,7 @@ public class SkyscraperCommand implements CommandExecutor {
                             expression.addArguments(new Argument("exact_eye_x_pos = " + ((Player) sender).getEyeLocation().getX()));
                             expression.addArguments(new Argument("exact_eye_y_pos = " + ((Player) sender).getEyeLocation().getY()));
                             expression.addArguments(new Argument("exact_eye_z_pos = " + ((Player) sender).getEyeLocation().getZ()));
-                        }
-                        else if (sender instanceof BlockCommandSender) {
+                        } else if (sender instanceof BlockCommandSender) {
                             expression.addArguments(new Argument("x_pos = " + ((BlockCommandSender) sender).getBlock().getLocation().getBlockX()));
                             expression.addArguments(new Argument("y_pos = " + ((BlockCommandSender) sender).getBlock().getLocation().getBlockY()));
                             expression.addArguments(new Argument("z_pos = " + ((BlockCommandSender) sender).getBlock().getLocation().getBlockZ()));
@@ -340,8 +341,7 @@ public class SkyscraperCommand implements CommandExecutor {
                         if (!Double.isNaN(result)) {
                             String replacement = String.valueOf(Math.toIntExact(Math.round(result)));
                             action.action = action.action.replaceFirst(Pattern.quote("{" + str + "}"), Matcher.quoteReplacement(replacement));
-                        }
-                        else {
+                        } else {
                             String replacement = str;
                             for (int i = 0; i < style.options.size(); i++) {
                                 replacement = replacement.replace(style.options.get(i).name, vars.get(i));
@@ -357,12 +357,10 @@ public class SkyscraperCommand implements CommandExecutor {
                         if (regexMatcher.group(1) != null) {
                             // Add double-quoted string without the quotes
                             splitStr.add(regexMatcher.group(1));
-                        }
-                        else if (regexMatcher.group(2) != null) {
+                        } else if (regexMatcher.group(2) != null) {
                             // Add single-quoted string without the quotes
                             splitStr.add(regexMatcher.group(2));
-                        }
-                        else {
+                        } else {
                             // Add unquoted word
                             splitStr.add(regexMatcher.group());
                         }
@@ -387,13 +385,12 @@ public class SkyscraperCommand implements CommandExecutor {
                                     for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
                                         if (!hollow || (x == startLoc.getBlockX() || x == endLoc.getBlockX() || y == startLoc.getBlockY() || y == endLoc.getBlockY() || z == startLoc.getBlockZ() || z == endLoc.getBlockZ())) {
                                             Location loc = new Location(CommandUtils.getWorld(sender), x, y, z);
-                                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
+                                            blockBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
                                         }
                                     }
                                 }
                             }
-                        }
-                        else if (action.action_type.equalsIgnoreCase("segmentcube") || action.action_type.equalsIgnoreCase("segcube") || action.action_type.equalsIgnoreCase("scube") || action.action_type.equalsIgnoreCase("segmentfill") || action.action_type.equalsIgnoreCase("segfill") || action.action_type.equalsIgnoreCase("sfill")) {
+                        } else if (action.action_type.equalsIgnoreCase("segmentcube") || action.action_type.equalsIgnoreCase("segcube") || action.action_type.equalsIgnoreCase("scube") || action.action_type.equalsIgnoreCase("segmentfill") || action.action_type.equalsIgnoreCase("segfill") || action.action_type.equalsIgnoreCase("sfill")) {
                             Location startLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
                             Location endLoc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)), Integer.parseInt(splitStr.get(5)));
                             boolean hollow = false;
@@ -404,21 +401,18 @@ public class SkyscraperCommand implements CommandExecutor {
                                     for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
                                         if (!hollow || (x == startLoc.getBlockX() || x == endLoc.getBlockX() || y == startLoc.getBlockY() || y == endLoc.getBlockY() || z == startLoc.getBlockZ() || z == endLoc.getBlockZ())) {
                                             Location loc = new Location(CommandUtils.getWorld(sender), x, y, z);
-                                            segmentBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
+                                            segmentBlockBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(6)));
                                         }
                                     }
                                 }
                             }
-                        }
-                        else if (action.action_type.equalsIgnoreCase("block")) {
+                        } else if (action.action_type.equalsIgnoreCase("block")) {
                             Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-                        }
-                        else if (action.action_type.equalsIgnoreCase("segmentblock") || action.action_type.equalsIgnoreCase("segblock") || action.action_type.equalsIgnoreCase("sblock")) {
+                            blockBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        } else if (action.action_type.equalsIgnoreCase("segmentblock") || action.action_type.equalsIgnoreCase("segblock") || action.action_type.equalsIgnoreCase("sblock")) {
                             Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-                            segmentBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-                        }
-                        else if (action.action_type.equalsIgnoreCase("circle")) {
+                            segmentBlockBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                        } else if (action.action_type.equalsIgnoreCase("circle")) {
                             Location center = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
                             int radius = Integer.parseInt(splitStr.get(4));
                             CircleGenerator.Plane plane = CircleGenerator.Plane.valueOf(splitStr.get(5).toUpperCase());
@@ -432,54 +426,79 @@ public class SkyscraperCommand implements CommandExecutor {
                             if (splitStr.size() > 8)
                                 allowBurrs = Boolean.parseBoolean(splitStr.get(8));
                             for (Location loc : CircleGenerator.generateCircle(center, radius, plane, hollow, ignoreEnclosed, allowBurrs)) {
-                                builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                                blockBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
                             }
-                        }
-                        else if (action.action_type.equalsIgnoreCase("segmentcircle") || action.action_type.equalsIgnoreCase("segcircle") || action.action_type.equalsIgnoreCase("scircle")) {
+                        } else if (action.action_type.equalsIgnoreCase("segmentcircle") || action.action_type.equalsIgnoreCase("segcircle") || action.action_type.equalsIgnoreCase("scircle")) {
                             Location center = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
                             int radius = Integer.parseInt(splitStr.get(4));
                             CircleGenerator.Plane plane = CircleGenerator.Plane.valueOf(splitStr.get(5).toUpperCase());
                             boolean hollow = false;
                             boolean ignoreEnclosed = false;
                             boolean allowBurrs = false;
-                            if (splitStr.size() > 6)
-                                hollow = Boolean.parseBoolean(splitStr.get(6));
-                            if (splitStr.size() > 7)
-                                ignoreEnclosed = Boolean.parseBoolean(splitStr.get(7));
                             if (splitStr.size() > 8)
                                 allowBurrs = Boolean.parseBoolean(splitStr.get(8));
+                            else if (splitStr.size() > 7)
+                                ignoreEnclosed = Boolean.parseBoolean(splitStr.get(7));
+                            else if (splitStr.size() > 6)
+                                hollow = Boolean.parseBoolean(splitStr.get(6));
                             for (Location loc : CircleGenerator.generateCircle(center, radius, plane, hollow, ignoreEnclosed, allowBurrs)) {
-                                segmentBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                                segmentBlockBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
                             }
                         }
-//                        else if (action.action_type.equalsIgnoreCase("sphere")) {
-//                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-//                            // TODO: Add spheres
-////                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-//                        }
-//                        else if (action.action_type.equalsIgnoreCase("segmentsphere") || action.action_type.equalsIgnoreCase("segsphere") || action.action_type.equalsIgnoreCase("ssphere")) {
-//                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-//                            // TODO: Add segment spheres
-////                            segmentBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-//                        }
-//                        else if (action.action_type.equalsIgnoreCase("hollowsphere")) {
-//                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-//                            // TODO: Add hollow spheres
-////                            builder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-//                        }
-//                        else if (action.action_type.equalsIgnoreCase("segmenthollowsphere") || action.action_type.equalsIgnoreCase("seghollowsphere") || action.action_type.equalsIgnoreCase("shollowsphere")) {
-//                            Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
-//                            // TODO: Add segment hollow spheres
-////                            segmentBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
-//                        }
-                        else if (action.action_type.equalsIgnoreCase("summon") || action.action_type.equalsIgnoreCase("summonmob") || action.action_type.equalsIgnoreCase("summonentity") || action.action_type.equalsIgnoreCase("spawnmob") || action.action_type.equalsIgnoreCase("spawnentity")) {
+                       /*else if (action.action_type.equalsIgnoreCase("sphere")) {
+                           Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                           // TODO: Add spheres
+//                            blockBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                       }
+                       else if (action.action_type.equalsIgnoreCase("segmentsphere") || action.action_type.equalsIgnoreCase("segsphere") || action.action_type.equalsIgnoreCase("ssphere")) {
+                           Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                           // TODO: Add segment spheres
+//                            segmentBlockBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                       }
+                       else if (action.action_type.equalsIgnoreCase("hollowsphere")) {
+                           Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                           // TODO: Add hollow spheres
+//                            blockBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                       }
+                       else if (action.action_type.equalsIgnoreCase("segmenthollowsphere") || action.action_type.equalsIgnoreCase("seghollowsphere") || action.action_type.equalsIgnoreCase("shollowsphere")) {
+                           Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(0)), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)));
+                           // TODO: Add segment hollow spheres
+//                            segmentBlockBuilder.addBlock(loc, Bukkit.createBlockData(splitStr.get(3)));
+                       }*/ else if (action.action_type.equalsIgnoreCase("summon") || action.action_type.equalsIgnoreCase("summonmob") || action.action_type.equalsIgnoreCase("summonentity") || action.action_type.equalsIgnoreCase("spawnmob") || action.action_type.equalsIgnoreCase("spawnentity")) {
                             World world = CommandUtils.getWorld(sender);
-                            Location loc = new Location(world, Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)));
-                            for (int i = 0; i < Integer.parseInt(splitStr.get(1)); i++) {
-                                world.spawnEntity(loc, EntityType.fromName(splitStr.get(0)));
+                            EntityType type = EntityType.fromName(splitStr.get(0));
+                            NBTEditor.NBTCompound nbt;
+                            Location loc;
+                            int amount;
+                            if (splitStr.size() == 6) {
+                                // ENTITY_TYPE NBT X Y Z AMOUNT
+                                nbt = NBTEditor.NBTCompound.fromJson(splitStr.get(1));
+                                loc = new Location(world, Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)));
+                                amount = Integer.parseInt(splitStr.get(2));
+                            } else if (splitStr.size() == 5) {
+                                if (splitStr.get(1).matches("-?\\d+(\\.\\d+)?")) {
+                                    // ENTITY_TYPE X Y Z AMOUNT
+                                    nbt = NBTEditor.NBTCompound.fromJson("{}");
+                                    loc = new Location(world, Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)));
+                                    amount = splitStr.get(4);
+                                } else {
+                                    // ENTITY_TYPE NBT X Y Z
+                                    nbt = NBTEditor.NBTCompound.fromJson(splitStr.get(1));
+                                    loc = new Location(world, Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)), Integer.parseInt(splitStr.get(4)));
+                                    amount = 1;
+                                }
+                            } else if (splitStr.size() == 4) {
+                                // ENTITY_TYPE X Y Z
+                                nbt = NBTEditor.NBTCompound.fromJson("{}");
+                                loc = new Location(world, Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)));
+                                amount = 1;
                             }
-                        }
-                        else if (action.action_type.equalsIgnoreCase("worldborder")) {
+
+                            for (int i = 0; i < amount; i++) {
+                                entityBuilder.addEntity(loc, type, nbt);
+                                // world.spawnEntity(loc, type);
+                            }
+                        } else if (action.action_type.equalsIgnoreCase("worldborder")) {
                             if (splitStr.size() == 0) {
                                 sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Missing arguments for the world border");
                                 return true;
@@ -494,8 +513,7 @@ public class SkyscraperCommand implements CommandExecutor {
                                         world.getWorldBorder().setCenter(CommandUtils.getLocation(((Player) sender).getLocation(), splitStr.get(1), "0", splitStr.get(2)));
                                     }
                                     return true;
-                                }
-                                else {
+                                } else {
                                     double x;
                                     double z;
                                     try {
@@ -510,8 +528,7 @@ public class SkyscraperCommand implements CommandExecutor {
                                     }
                                     return true;
                                 }
-                            }
-                            else if (splitStr.get(0).equalsIgnoreCase("set")) {
+                            } else if (splitStr.get(0).equalsIgnoreCase("set")) {
                                 if (splitStr.size() < 2) {
                                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Missing world border size!");
                                     return true;
@@ -539,8 +556,7 @@ public class SkyscraperCommand implements CommandExecutor {
                                 for (World world : Bukkit.getWorlds()) {
                                     world.getWorldBorder().setSize(size, time);
                                 }
-                            }
-                            else if (splitStr.get(0).equalsIgnoreCase("add")) {
+                            } else if (splitStr.get(0).equalsIgnoreCase("add")) {
                                 if (splitStr.size() < 2) {
                                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot add to world border size because of missing arguments.");
                                     return true;
@@ -568,8 +584,7 @@ public class SkyscraperCommand implements CommandExecutor {
                                 for (World world : Bukkit.getWorlds()) {
                                     world.getWorldBorder().setSize(size + world.getWorldBorder().getSize(), time);
                                 }
-                            }
-                            else if (splitStr.get(0).equalsIgnoreCase("damage")) {
+                            } else if (splitStr.get(0).equalsIgnoreCase("damage")) {
                                 if (splitStr.size() < 2) {
                                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border damage because of missing arguments.");
                                     return true;
@@ -597,8 +612,7 @@ public class SkyscraperCommand implements CommandExecutor {
                                     }
                                     sender.sendMessage(SkyRiser.prefix + "Set border's damage buffer to " + buffer + " blocks.");
                                     return true;
-                                }
-                                else if (splitStr.get(1).equalsIgnoreCase("amount")) {
+                                } else if (splitStr.get(1).equalsIgnoreCase("amount")) {
                                     if (splitStr.size() < 3) {
                                         sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border damage because of missing arguments.");
                                         return true;
@@ -620,13 +634,11 @@ public class SkyscraperCommand implements CommandExecutor {
                                         world.getWorldBorder().setDamageAmount(damage);
                                     }
                                     return true;
-                                }
-                                else {
+                                } else {
                                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border damage because of invalid arguments.");
                                     return true;
                                 }
-                            }
-                            else if (splitStr.get(0).equalsIgnoreCase("warning")) {
+                            } else if (splitStr.get(0).equalsIgnoreCase("warning")) {
                                 if (splitStr.size() < 2) {
                                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border warning info because of missing arguments.");
                                     return true;
@@ -653,8 +665,7 @@ public class SkyscraperCommand implements CommandExecutor {
                                         world.getWorldBorder().setWarningTime(time);
                                     }
                                     return true;
-                                }
-                                else if (splitStr.get(1).equalsIgnoreCase("distance")) {
+                                } else if (splitStr.get(1).equalsIgnoreCase("distance")) {
                                     if (splitStr.size() < 3) {
                                         sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border warning distance because of missing arguments.");
                                         return true;
@@ -676,18 +687,15 @@ public class SkyscraperCommand implements CommandExecutor {
                                         world.getWorldBorder().setWarningDistance(blocks);
                                     }
                                     return true;
-                                }
-                                else {
+                                } else {
                                     sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot set world border warning info because of invalid arguments.");
                                     return true;
                                 }
-                            }
-                            else {
+                            } else {
                                 sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Style Error: Cannot modify world border because of missing or invalid arguments.");
                                 return true;
                             }
-                        }
-                        else if (action.action_type.equalsIgnoreCase("holo") || action.action_type.equalsIgnoreCase("hologram")) {
+                        } else if (action.action_type.equalsIgnoreCase("holo") || action.action_type.equalsIgnoreCase("hologram")) {
                             Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)));
 
                             if (SkyRiser.useHolographicDisplays) {
@@ -706,31 +714,38 @@ public class SkyscraperCommand implements CommandExecutor {
                                 HologramDatabase.saveHologram(hologram);
                                 HologramDatabase.trySaveToDisk();
                             }
-                            else {
+                            else
                                 sender.sendMessage(SkyRiser.prefix + ChatColor.YELLOW + "Warning: This style requires a hologram plugin to fully work! Install Holographic Displays!");
-                            }
-                        }
-                        else if (action.action_type.equalsIgnoreCase("particle")) {
+                        } else if (action.action_type.equalsIgnoreCase("particle")) {
                             Location loc = new Location(CommandUtils.getWorld(sender), Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)));
 
                             if (SkyRiser.useParticleLib) {
                                 // TODO: Add this
                             }
-                            else {
+                            else
                                 sender.sendMessage(SkyRiser.prefix + ChatColor.YELLOW + "Warning: This style requires ParticleLib to fully work!");
-                            }
                         }
                     }
                 }
-                if (sender instanceof Player && segmentBuilder.blocks.size() > 0) {
-                    if (SkyRiser.instance.addPlayerBuilder(sender.getName(), segmentBuilder))
+                if (sender instanceof Player && (segmentBlockBuilder.blocks.size() > 0 || segmentEntityBuilder.blocks.size() > 0)) {
+                    boolean success = true;
+                    if (segmentBlockBuilder.blocks.size() > 0)
+                        success = SkyRiser.instance.addPlayerBuilder(sender.getName(), segmentBlockBuilder);
+                    if (segmentEntityBuilder.blocks.size() > 0)
+                        success = success && SkyRiser.instance.addPlayerBuilder(sender.getName(), segmentEntityBuilder);
+
+                    if (success)
                         sender.sendMessage(SkyRiser.prefix + ChatColor.GREEN + "Started building something, stop with " + ChatColor.DARK_GREEN + "/skyscraper stop" + ChatColor.GREEN + ".");
                     else
                         sender.sendMessage(SkyRiser.prefix + ChatColor.RED + "Error: You are already building something, stop with " + ChatColor.DARK_RED + "/skyscraper stop" + ChatColor.RED + ".");
                 }
-                if (builder.blocks.size() > 0) {
-                    SkyRiser.instance.addPlayerHistory(sender.getName(), builder);
-                    builder.build();
+                if (blockBuilder.blocks.size() > 0) {
+                    SkyRiser.instance.addPlayerHistory(sender.getName(), blockBuilder);
+                    blockBuilder.build();
+                }
+                if (entityBuilder.entityDatas.size() > 0) {
+                    SkyRiser.instance.addPlayerHistory(sender.getName(), entityBuilder);
+                    entityBuilder.build();
                 }
             }
         }
