@@ -8,7 +8,7 @@ authors: [ DaRubyMiner360 ]
 description: The SkyRiser plugin.
 website: http://darubyminer360.ml/
 
-softdepend: [ WorldEdit, HolographicDisplays, ParticleLib, Skript ]
+softdepend: [ HolographicDisplays, ParticleLib, Skript, PlaceholderAPI ]
 
 commands:
   skyreload:

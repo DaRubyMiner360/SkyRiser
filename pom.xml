@@ -66,16 +66,16 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>enginehub-maven</id>
-            <url>https://maven.enginehub.org/repo/</url>
-        </repository>
-        <repository>
-            <id>codemc-repo</id>
-            <url>https://repo.codemc.io/repository/maven-public/</url>
+            <id>CodeMC</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
     </repositories>
 
@@ -98,14 +98,8 @@
         </dependency>
         <dependency>
             <groupId>io.github.bananapuncher714</groupId>
-            <artifactId>nbtditor</artifactId>
-            <version>7.17.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sk89q.worldedit</groupId>
-            <artifactId>worldedit-bukkit</artifactId>
-            <version>7.2.0-SNAPSHOT</version>
-            <scope>provided</scope>
+            <artifactId>nbteditor</artifactId>
+            <version>7.18.0</version>
         </dependency>
         <dependency>
             <groupId>xyz.xenondevs</groupId>
@@ -116,6 +110,12 @@
             <groupId>com.github.SkriptLang</groupId>
             <artifactId>Skript</artifactId>
             <version>2.6-beta3</version>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

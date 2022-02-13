@@ -1,6 +1,6 @@
 /*
  * SkyRiser, a custom Minecraft skyscraper builder plugin.
- * Copyright (C) 2021 DaRubyMiner360
+ * Copyright (C) 2021-2022 DaRubyMiner360
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,29 +18,29 @@
 
 package ml.darubyminer360.skyriser.utils;
 
+import ch.njol.util.Pair;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Arrays;
+
+import io.github.bananapuncher714.nbteditor.NBTEditor;
 
 public class EntityBuilder extends Builder {
-    public LinkedHashMap<Location, Entity> allSpawnedEntities = new LinkedHashMap<>();
-    public LinkedHashMap<Location, List<Object>> allSpawnedEntityDatas = new LinkedHashMap<>();
-    public LinkedHashMap<Location, List<Object>> entityDatas = new LinkedHashMap<>();
+    public LinkedList<Entity> spawnedEntities = new LinkedList<>();
+    public LinkedHashMap<Location, Pair<EntityType, NBTEditor.NBTCompound>> spawnedEntityDatas = new LinkedHashMap<>();
+    public LinkedHashMap<Location, Pair<EntityType, NBTEditor.NBTCompound>> entityDatas = new LinkedHashMap<>();
 
-    public EntityBuilder(CommandSender sender, boolean shouldRotate) {
-        super(sender, shouldRotate);
-    }
+    public EntityBuilder(CommandSender sender, boolean shouldRotate) { super(sender, shouldRotate); }
 
-    public void addEntity(Location location, EntityType type, Object nbt) {
-        entityDatas.put(location, Arrays.asList(type, nbt));
-    }
+    public void addEntity(Location location, EntityType type, NBTEditor.NBTCompound nbt) { entityDatas.put(location, new Pair<>(type, nbt)); }
 
     @Override
     public void build() {
@@ -57,13 +57,13 @@ public class EntityBuilder extends Builder {
 
         Location center = origin.add(direction);
 
-        LinkedHashMap<Location, List<Object>> entityDatas = new LinkedHashMap<>(this.entityDatas);
+        LinkedHashMap<Location, Pair<EntityType, NBTEditor.NBTCompound>> entityDatas = new LinkedHashMap<>(this.entityDatas);
         int smallest = 0;
         int largest = 0;
         int amount = 0;
 
-        for (Map.Entry<Location, List<Object>> block : entityDatas.entrySet()) {
-            Location location = block.getKey();
+        for (Map.Entry<Location, Pair<EntityType, NBTEditor.NBTCompound>> entityData : entityDatas.entrySet()) {
+            Location location = entityData.getKey();
 
             switch (senderRotation) {
                 case "West" -> {
@@ -101,21 +101,21 @@ public class EntityBuilder extends Builder {
             }
         }
 
-        for (Map.Entry<Location, List<Object>> block : entityDatas.entrySet()) {
-            Location location = block.getKey();
+        for (Map.Entry<Location, Pair<EntityType, NBTEditor.NBTCompound>> entityData : entityDatas.entrySet()) {
+            Location location = entityData.getKey();
 
-            if (shouldRotate) {
+//            if (shouldRotate) {
 //                Vector rotation = BlockUtils.getRotationDirection(origin, amount);
 //
 //                Vector initialRotation = rotation.clone().multiply((largest - smallest) / 4);
 //                location = center.clone().add(location).add(initialRotation).subtract(0, (largest - smallest) / 2, 0);
 //                rotation.multiply(-1);
-            }
+//            }
 
-            allOriginalEntities.put(location, location.getBlock().getBlockData());
-            Entity entity = location.getWorld().spawnEntity(loc, block.getValue().get(0));
-            location.getBlock().setBlockData(block.getValue().get(1), false);
-            allSpawnedEntities.put(location, location.getBlock().getBlockData());
+            Entity entity = location.getWorld().spawnEntity(location, entityData.getValue().getKey());
+            NBTEditor.set(entity, entityData.getValue().getValue());
+            spawnedEntities.add(entity);
+            spawnedEntityDatas.put(location, entityData.getValue());
         }
     }
 
@@ -134,14 +134,14 @@ public class EntityBuilder extends Builder {
 
         Location center = origin.add(direction);
 
-        LinkedHashMap<Location, List<Object>> entityDatas = new LinkedHashMap<>(this.entityDatas);
+        LinkedHashMap<Location, Pair<EntityType, NBTEditor.NBTCompound>> entityDatas = new LinkedHashMap<>(this.entityDatas);
         layer -= 1;
         int smallest = 0;
         int largest = 0;
         int amount = 0;
 
-        for (Map.Entry<Location, List<Object>> block : entityDatas.entrySet()) {
-            Location location = block.getKey();
+        for (Map.Entry<Location, Pair<EntityType, NBTEditor.NBTCompound>> entityData : entityDatas.entrySet()) {
+            Location location = entityData.getKey();
 
             switch (senderRotation) {
                 case "West" -> {
@@ -181,16 +181,16 @@ public class EntityBuilder extends Builder {
 
         layer += smallest;
 
-        for (Map.Entry<Location, List<Object>> block : entityDatas.entrySet()) {
-            Location location = block.getKey();
+        for (Map.Entry<Location, Pair<EntityType, NBTEditor.NBTCompound>> entityData : entityDatas.entrySet()) {
+            Location location = entityData.getKey();
 
-            if (shouldRotate) {
+//            if (shouldRotate) {
 //                Vector rotation = BlockUtils.getRotationDirection(origin, amount);
 //
 //                Vector initialRotation = rotation.clone().multiply((largest - smallest) / 4);
 //                location = center.clone().add(location).add(initialRotation).subtract(0, (largest - smallest) / 2, 0);
 //                rotation.multiply(-1);
-            }
+//            }
 
             switch (senderRotation) {
                 case "West" -> {
@@ -199,10 +199,10 @@ public class EntityBuilder extends Builder {
                     sender.sendMessage(String.valueOf(-layer));
                     if (location.getBlockX() == layer) {
                         sender.sendMessage("AA");
-                        allOriginalEntities.put(location, location.getBlock().getBlockData());
-                        location.getBlock().setType(block.getValue().getMaterial(), false);
-                        location.getBlock().setBlockData(block.getValue(), false);
-                        allSpawnedEntities.put(location, location.getBlock().getBlockData());
+                        Entity entity = location.getWorld().spawnEntity(location, entityData.getValue().getKey());
+                        NBTEditor.set(entity, entityData.getValue().getValue());
+                        spawnedEntities.add(entity);
+                        spawnedEntityDatas.put(location, entityData.getValue());
                     } else
                         sender.sendMessage("AAA");
                 }
@@ -210,10 +210,10 @@ public class EntityBuilder extends Builder {
                     // North (Negative Z, 180 Degrees)
                     if (location.getBlockZ() == layer) {
                         sender.sendMessage("AB");
-                        allOriginalEntities.put(location, location.getBlock().getBlockData());
-                        location.getBlock().setType(block.getValue().getMaterial(), false);
-                        location.getBlock().setBlockData(block.getValue(), false);
-                        allSpawnedEntities.put(location, location.getBlock().getBlockData());
+                        Entity entity = location.getWorld().spawnEntity(location, entityData.getValue().getKey());
+                        NBTEditor.set(entity, entityData.getValue().getValue());
+                        spawnedEntities.add(entity);
+                        spawnedEntityDatas.put(location, entityData.getValue());
                     } else
                         sender.sendMessage("AAB");
                 }
@@ -221,10 +221,10 @@ public class EntityBuilder extends Builder {
                     // East (Positive X, 270 Degrees)
                     if (location.getBlockX() == layer) {
                         sender.sendMessage("AC");
-                        allOriginalEntities.put(location, location.getBlock().getBlockData());
-                        location.getBlock().setType(block.getValue().getMaterial(), false);
-                        location.getBlock().setBlockData(block.getValue(), false);
-                        allSpawnedEntities.put(location, location.getBlock().getBlockData());
+                        Entity entity = location.getWorld().spawnEntity(location, entityData.getValue().getKey());
+                        NBTEditor.set(entity, entityData.getValue().getValue());
+                        spawnedEntities.add(entity);
+                        spawnedEntityDatas.put(location, entityData.getValue());
                     } else
                         sender.sendMessage("AAC");
                 }
@@ -232,10 +232,10 @@ public class EntityBuilder extends Builder {
                     // South (Positive Z, 0 Degrees)
                     if (location.getBlockZ() == layer) {
                         sender.sendMessage("AD");
-                        allOriginalEntities.put(location, location.getBlock().getBlockData());
-                        location.getBlock().setType(block.getValue().getMaterial(), false);
-                        location.getBlock().setBlockData(block.getValue(), false);
-                        allSpawnedEntities.put(location, location.getBlock().getBlockData());
+                        Entity entity = location.getWorld().spawnEntity(location, entityData.getValue().getKey());
+                        NBTEditor.set(entity, entityData.getValue().getValue());
+                        spawnedEntities.add(entity);
+                        spawnedEntityDatas.put(location, entityData.getValue());
                     } else
                         sender.sendMessage("AAD");
                 }
@@ -253,8 +253,8 @@ public class EntityBuilder extends Builder {
 
         int largest = 0;
 
-        for (Map.Entry<Location, List<Object>> block : entityDatas.entrySet()) {
-            Location location = block.getKey();
+        for (Map.Entry<Location, Pair<EntityType, NBTEditor.NBTCompound>> entityData : entityDatas.entrySet()) {
+            Location location = entityData.getKey();
 
             switch (senderRotation) {
                 case "West" -> {
@@ -292,8 +292,8 @@ public class EntityBuilder extends Builder {
 
         int smallest = 0;
 
-        for (Map.Entry<Location, List<Object>> block : entityDatas.entrySet()) {
-            Location location = block.getKey();
+        for (Map.Entry<Location, Pair<EntityType, NBTEditor.NBTCompound>> entityData : entityDatas.entrySet()) {
+            Location location = entityData.getKey();
 
             switch (senderRotation) {
                 case "West" -> {
@@ -323,17 +323,20 @@ public class EntityBuilder extends Builder {
 
     @Override
     public void undo() {
-        for (Map.Entry<Location, BlockData> block : allOriginalEntities.entrySet()) {
-            block.getKey().getBlock().setType(block.getValue().getMaterial(), false);
-            block.getKey().getBlock().setBlockData(block.getValue(), false);
+        for (Entity entity : spawnedEntities) {
+            entity.remove();
         }
     }
 
     @Override
     public void redo() {
-        for (Map.Entry<Location, BlockData> block : allSpawnedEntities.entrySet()) {
-            block.getKey().getBlock().setType(block.getValue().getMaterial(), false);
-            block.getKey().getBlock().setBlockData(block.getValue(), false);
+        int index = 0;
+        for (Map.Entry<Location, Pair<EntityType, NBTEditor.NBTCompound>> entityData : spawnedEntityDatas.entrySet()) {
+            Entity entity = entityData.getKey().getWorld().spawnEntity(entityData.getKey(), entityData.getValue().getKey());
+            NBTEditor.set(entity, entityData.getValue().getValue());
+            spawnedEntities.set(index, entity);
+
+            index++;
         }
     }
 }

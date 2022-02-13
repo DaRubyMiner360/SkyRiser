@@ -1,6 +1,6 @@
 /*
  * SkyRiser, a custom Minecraft skyscraper builder plugin.
- * Copyright (C) 2021 DaRubyMiner360
+ * Copyright (C) 2021-2022 DaRubyMiner360
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,8 +53,8 @@ public final class SkyRiser extends JavaPlugin {
 
     public static final String prefix = ChatColor.WHITE + "[" + ChatColor.BLUE + "Sky" + ChatColor.GREEN + "Riser" + ChatColor.WHITE + "] " + ChatColor.RESET;
 
-    public static boolean useWorldEdit = false;
     public static boolean useHolographicDisplays = false;
+    public static boolean usePlaceholderAPI = false;
     public static boolean useParticleLib = false;
     public static boolean useSkript = false;
 
@@ -102,6 +102,7 @@ public final class SkyRiser extends JavaPlugin {
         }*/
 
         useHolographicDisplays = Bukkit.getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
+        usePlaceholderAPI = Bukkit.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
         useParticleLib = Bukkit.getServer().getPluginManager().isPluginEnabled("ParticleLib");
         useSkript = Bukkit.getServer().getPluginManager().isPluginEnabled("Skript");
 

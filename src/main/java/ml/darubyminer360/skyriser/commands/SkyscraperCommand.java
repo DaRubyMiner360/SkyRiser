@@ -1,6 +1,6 @@
 /*
  * SkyRiser, a custom Minecraft skyscraper builder plugin.
- * Copyright (C) 2021 DaRubyMiner360
+ * Copyright (C) 2021-2022 DaRubyMiner360
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -285,6 +285,10 @@ public class SkyscraperCommand implements CommandExecutor {
                 EntityBuilder entityBuilder = new EntityBuilder(sender, style.rotate);
                 EntityBuilder segmentEntityBuilder = new EntityBuilder(sender, style.rotate);
                 for (Style.Action action : style.actions) {
+                    if (SkyRiser.usePlaceholderAPI && sender instanceof Player) {
+                        action.action = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders((Player) sender, action.action);
+                    }
+
                     List<String> s = Arrays.asList(action.action.replaceAll("^.*?\\{", "").split("}.*?(\\{|$)"));
                     for (String str : s) {
                         if (str.contains("palette[")) {
@@ -467,9 +471,9 @@ public class SkyscraperCommand implements CommandExecutor {
                        }*/ else if (action.action_type.equalsIgnoreCase("summon") || action.action_type.equalsIgnoreCase("summonmob") || action.action_type.equalsIgnoreCase("summonentity") || action.action_type.equalsIgnoreCase("spawnmob") || action.action_type.equalsIgnoreCase("spawnentity")) {
                             World world = CommandUtils.getWorld(sender);
                             EntityType type = EntityType.fromName(splitStr.get(0));
-                            NBTEditor.NBTCompound nbt;
-                            Location loc;
-                            int amount;
+                            NBTEditor.NBTCompound nbt = NBTEditor.NBTCompound.fromJson("{}");
+                            Location loc = new Location(world, 0, 0, 0);
+                            int amount = 1;
                             if (splitStr.size() == 6) {
                                 // ENTITY_TYPE NBT X Y Z AMOUNT
                                 nbt = NBTEditor.NBTCompound.fromJson(splitStr.get(1));
@@ -478,9 +482,8 @@ public class SkyscraperCommand implements CommandExecutor {
                             } else if (splitStr.size() == 5) {
                                 if (splitStr.get(1).matches("-?\\d+(\\.\\d+)?")) {
                                     // ENTITY_TYPE X Y Z AMOUNT
-                                    nbt = NBTEditor.NBTCompound.fromJson("{}");
                                     loc = new Location(world, Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)));
-                                    amount = splitStr.get(4);
+                                    amount = Integer.parseInt(splitStr.get(4));
                                 } else {
                                     // ENTITY_TYPE NBT X Y Z
                                     nbt = NBTEditor.NBTCompound.fromJson(splitStr.get(1));
@@ -489,7 +492,6 @@ public class SkyscraperCommand implements CommandExecutor {
                                 }
                             } else if (splitStr.size() == 4) {
                                 // ENTITY_TYPE X Y Z
-                                nbt = NBTEditor.NBTCompound.fromJson("{}");
                                 loc = new Location(world, Integer.parseInt(splitStr.get(1)), Integer.parseInt(splitStr.get(2)), Integer.parseInt(splitStr.get(3)));
                                 amount = 1;
                             }
@@ -727,11 +729,11 @@ public class SkyscraperCommand implements CommandExecutor {
                         }
                     }
                 }
-                if (sender instanceof Player && (segmentBlockBuilder.blocks.size() > 0 || segmentEntityBuilder.blocks.size() > 0)) {
+                if (sender instanceof Player && (segmentBlockBuilder.blocks.size() > 0 || segmentEntityBuilder.entityDatas.size() > 0)) {
                     boolean success = true;
                     if (segmentBlockBuilder.blocks.size() > 0)
                         success = SkyRiser.instance.addPlayerBuilder(sender.getName(), segmentBlockBuilder);
-                    if (segmentEntityBuilder.blocks.size() > 0)
+                    if (segmentEntityBuilder.entityDatas.size() > 0)
                         success = success && SkyRiser.instance.addPlayerBuilder(sender.getName(), segmentEntityBuilder);
 
                     if (success)

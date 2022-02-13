@@ -1,6 +1,6 @@
 /*
  * SkyRiser, a custom Minecraft skyscraper builder plugin.
- * Copyright (C) 2021 DaRubyMiner360
+ * Copyright (C) 2021-2022 DaRubyMiner360
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,13 +103,13 @@ public class BlockBuilder extends Builder {
         for (Map.Entry<Location, BlockData> block : blocks.entrySet()) {
             Location location = block.getKey();
 
-            if (shouldRotate) {
+//            if (shouldRotate) {
 //                Vector rotation = BlockUtils.getRotationDirection(origin, amount);
 //
 //                Vector initialRotation = rotation.clone().multiply((largest - smallest) / 4);
 //                location = center.clone().add(location).add(initialRotation).subtract(0, (largest - smallest) / 2, 0);
 //                rotation.multiply(-1);
-            }
+//            }
 
             allOriginalBlocks.put(location, location.getBlock().getBlockData());
             location.getBlock().setType(block.getValue().getMaterial(), false);
@@ -183,13 +183,13 @@ public class BlockBuilder extends Builder {
         for (Map.Entry<Location, BlockData> block : blocks.entrySet()) {
             Location location = block.getKey();
 
-            if (shouldRotate) {
+//            if (shouldRotate) {
 //                Vector rotation = BlockUtils.getRotationDirection(origin, amount);
 //
 //                Vector initialRotation = rotation.clone().multiply((largest - smallest) / 4);
 //                location = center.clone().add(location).add(initialRotation).subtract(0, (largest - smallest) / 2, 0);
 //                rotation.multiply(-1);
-            }
+//            }
 
             switch (senderRotation) {
                 case "West" -> {
